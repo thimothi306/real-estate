@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/*
+ * Kavuri Estates palette — matched to the mobile app (src/theme.ts) and the
+ * admin panel. Deep navy carries the brand; gold is reserved for the single
+ * highest-intent action on a screen so it never competes with itself.
+ */
+:root {
+  --background: #f5f7fb;
+  --surface: #ffffff;
+  --surface-alt: #eef1f7;
+  --foreground: #101828;
+  --muted: #667085;
+  --faint: #98a2b3;
+  --border: #e5e9f0;
+
+  --navy: #0d1b33;
+  --navy-soft: #16305b;
+
+  --primary: #16305b;
+  --primary-dark: #0d1b33;
+  --primary-soft: #e8edf7;
+
+  --gold: #c9a961;
+  --gold-dark: #b0904a;
+  --gold-soft: #faf4e6;
+
+  --success: #17803d;
+  --success-bg: #e8f5ec;
+  --danger: #b42318;
+  --danger-bg: #fdeceb;
+  --warning: #a15c07;
+  --warning-bg: #fdf3e3;
+  --info: #175cd3;
+  --info-bg: #eaf1fe;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-border: var(--border);
+  --color-navy: var(--navy);
+  --color-navy-soft: var(--navy-soft);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-soft: var(--primary-soft);
+  --color-gold: var(--gold);
+  --color-gold-dark: var(--gold-dark);
+  --color-gold-soft: var(--gold-soft);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/*
+ * Dark mode. Only tokens are redefined here — components always read the
+ * token, never a literal, so both themes resolve as a complete set.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #0a1220;
+    --surface: #101a2e;
+    --surface-alt: #16233c;
+    --foreground: #e7eaef;
+    --muted: #98a2b3;
+    --faint: #6b7788;
+    --border: #1e2c48;
+
+    --navy: #060d18;
+    --navy-soft: #16305b;
+
+    --primary: #6f9fe8;
+    --primary-dark: #8fb6ee;
+    --primary-soft: #16233c;
+
+    --gold: #d9bd7c;
+    --gold-dark: #c9a961;
+    --gold-soft: #241f14;
+
+    --success-bg: #10261a;
+    --danger-bg: #2b1917;
+    --warning-bg: #2a2013;
+    --info-bg: #12213c;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #0a1220;
+  --surface: #101a2e;
+  --surface-alt: #16233c;
+  --foreground: #e7eaef;
+  --muted: #98a2b3;
+  --faint: #6b7788;
+  --border: #1e2c48;
+
+  --navy: #060d18;
+  --navy-soft: #16305b;
+
+  --primary: #6f9fe8;
+  --primary-dark: #8fb6ee;
+  --primary-soft: #16233c;
+
+  --gold: #d9bd7c;
+  --gold-dark: #c9a961;
+  --gold-soft: #241f14;
+
+  --success-bg: #10261a;
+  --danger-bg: #2b1917;
+  --warning-bg: #2a2013;
+  --info-bg: #12213c;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Wide content scrolls inside its own container, never the page body. */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.scroll-x::-webkit-scrollbar { height: 6px; }
+.scroll-x::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
