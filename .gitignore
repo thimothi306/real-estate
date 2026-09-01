@@ -1,0 +1,10 @@
+# Reference documents and stock images at the repo root — not part of any
+# project, kept locally only.
+*.pdf
+*.docx
+/*.jpg
+/*.jpeg
+/*.png
+
+.DS_Store
+Thumbs.db
