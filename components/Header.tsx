@@ -1,0 +1,43 @@
+import Link from 'next/link';
+import { AuthNav } from './AuthNav';
+import { StickyHeaderShell } from './StickyHeaderShell';
+
+const NAV = [
+  { href: '/properties?listing_type=sale', label: 'Buy' },
+  { href: '/properties?listing_type=rent', label: 'Rent' },
+  { href: '/properties?property_type=plot', label: 'Plots' },
+  { href: '/properties?property_type=commercial', label: 'Commercial' },
+  { href: '/services', label: 'Services' },
+];
+
+export function Header() {
+  return (
+    <StickyHeaderShell>
+      <header className="flex items-center justify-between gap-4 px-4 py-2.5 sm:px-6">
+        <Link href="/" className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-gold text-base">
+            🏛
+          </span>
+          <span className="hidden sm:block">
+            <span className="block text-sm font-extrabold leading-none tracking-[2px] text-foreground">KAVURI</span>
+            <span className="mt-0.5 block text-[8px] font-bold tracking-[3px] text-gold">ESTATES</span>
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 text-sm font-semibold text-muted md:flex">
+          {NAV.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="rounded-full px-3.5 py-1.5 transition hover:bg-primary-soft hover:text-primary"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <AuthNav />
+      </header>
+    </StickyHeaderShell>
+  );
+}

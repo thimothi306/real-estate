@@ -1,69 +1,111 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { getCategoryCounts, getCities, searchProperties } from '@/lib/api';
+import { PropertyCard } from '@/components/PropertyCard';
+import { LandingHero } from '@/components/LandingHero';
+import { LifestyleGrid } from '@/components/LifestyleGrid';
+import { StatsBar } from '@/components/StatsBar';
+import { LenderStrip } from '@/components/LenderStrip';
+import { HowItWorksStrip } from '@/components/HowItWorksStrip';
+import { TrustSection } from '@/components/TrustSection';
+import { CategoryTiles } from '@/components/CategoryTiles';
+import { HowItWorks } from '@/components/HowItWorks';
+import { FaqSection } from '@/components/FaqSection';
+import { FinalCta } from '@/components/FinalCta';
+import { Reveal } from '@/components/Reveal';
 
-export default function Home() {
+export default async function HomePage() {
+  const [featured, latest, counts, cities] = await Promise.all([
+    searchProperties({ sort: 'newest', per_page: 8 }),
+    searchProperties({ sort: 'price_desc', per_page: 6 }),
+    getCategoryCounts(),
+    getCities(),
+  ]);
+
+  const totalProperties = Object.values(counts.by_listing_type).reduce((sum, n) => sum + n, 0);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    // No clipping wrapper here — ScrollTrigger pins HowItWorks with
+    // position:fixed, and a clipping ancestor clips the pinned element out of
+    // view. Sections with horizontal motion clip themselves instead.
+    <div>
+      <LandingHero verifiedCount={totalProperties} />
+
+      <LifestyleGrid />
+
+      <StatsBar propertyCount={totalProperties} cityCount={cities.length} />
+
+      <div className="mt-14">
+        <LenderStrip />
+      </div>
+
+      <HowItWorksStrip />
+
+      <section className="mx-auto max-w-6xl px-4 pb-4">
+        <Reveal>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-foreground sm:text-2xl">Browse by category</h2>
+            <Link href="/properties" className="text-sm font-semibold text-primary hover:underline">
+              View all
+            </Link>
+          </div>
+          <CategoryTiles />
+        </Reveal>
+      </section>
+
+      <TrustSection />
+
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <Reveal>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-foreground sm:text-2xl">Recommended Properties</h2>
+              <p className="mt-1 text-sm text-muted">Freshly listed and verified this week.</p>
+            </div>
+            <Link href="/properties" className="text-sm font-semibold text-primary hover:underline">
+              View All
+            </Link>
+          </div>
+        </Reveal>
+
+        {featured.items.length === 0 ? (
+          <p className="mt-6 text-muted">No published listings yet.</p>
+        ) : (
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.items.slice(0, 8).map((property, i) => (
+              <Reveal key={property.id} delay={(i % 4) * 0.07}>
+                <PropertyCard property={property} />
+              </Reveal>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <HowItWorks />
+
+      {/* Clipped locally: the cards slide in horizontally, which would
+          otherwise push the page wider than the viewport mid-animation. */}
+      <section className="mx-auto max-w-6xl overflow-x-clip px-4 py-16">
+        <Reveal>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-foreground sm:text-2xl">Premium Listings</h2>
+            <Link href="/properties?sort=price_desc" className="text-sm font-semibold text-primary hover:underline">
+              View All
+            </Link>
+          </div>
+        </Reveal>
+
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latest.items.slice(0, 6).map((property, i) => (
+            <Reveal key={property.id} delay={(i % 3) * 0.07} direction={i % 2 === 0 ? 'left' : 'right'}>
+              <PropertyCard property={property} />
+            </Reveal>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      <FaqSection />
+
+      <FinalCta />
     </div>
   );
 }
