@@ -1,55 +1,91 @@
 @import "tailwindcss";
 
 /*
- * Kavuri Estates palette — matched to the mobile app (src/theme.ts) and the
- * admin panel. Deep navy carries the brand; gold is reserved for the single
+ * Kavuri Estates — premium palette.
+ *
+ * Deep navy carries the brand; warm gold is reserved for the single
  * highest-intent action on a screen so it never competes with itself.
+ * Surfaces carry a subtle paper-to-metallic gradient that reads as
+ * expensive without being shiny. Shadows are deeper and softer than a
+ * flat UI, giving every card and panel a physical presence.
  */
 :root {
-  --background: #f5f7fb;
+  /* Surfaces — warm off-white with a faint blue cast */
+  --background: #f6f8fc;
   --surface: #ffffff;
-  --surface-alt: #eef1f7;
-  --foreground: #101828;
-  --muted: #667085;
-  --faint: #98a2b3;
-  --border: #e5e9f0;
+  --surface-alt: #eef2f9;
+  --surface-raised: #ffffff;
 
-  --navy: #0d1b33;
-  --navy-soft: #16305b;
+  /* Text */
+  --foreground: #0d1830;
+  --muted: #5a6680;
+  --faint: #8a93a8;
+  --border: #e2e8f3;
+  --border-strong: #cdd7e8;
 
-  --primary: #16305b;
-  --primary-dark: #0d1b33;
-  --primary-soft: #e8edf7;
+  /* Navy scale — deeper and richer */
+  --navy: #0a1630;
+  --navy-soft: #142a52;
+  --navy-deep: #060d20;
 
-  --gold: #c9a961;
-  --gold-dark: #b0904a;
-  --gold-soft: #faf4e6;
+  /* Primary — soft steel blue for interactive elements */
+  --primary: #1f3b6e;
+  --primary-dark: #142a52;
+  --primary-soft: #eef3fb;
+  --primary-glow: rgba(31, 59, 110, 0.25);
 
-  --success: #17803d;
-  --success-bg: #e8f5ec;
+  /* Gold token, now a rich burnished copper/terracotta — reads as
+     "property, earth, craft" rather than the generic navy+gold finance
+     look, while keeping the same one-accent-only discipline. */
+  --gold: #b5551f;
+  --gold-bright: #d97f42;
+  --gold-deep: #8a3f16;
+  --gold-soft: #fbeee3;
+  --gold-glow: rgba(181, 85, 31, 0.4);
+
+  /* Semantic */
+  --success: #157347;
+  --success-bg: #e7f3ec;
   --danger: #b42318;
   --danger-bg: #fdeceb;
   --warning: #a15c07;
   --warning-bg: #fdf3e3;
   --info: #175cd3;
   --info-bg: #eaf1fe;
+
+  /* Overlay tints for glass panels */
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-strong: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.6);
+
+  /* Shadows — softer, deeper, with a colored cast */
+  --shadow-sm: 0 1px 2px rgba(10, 22, 48, 0.06), 0 1px 3px rgba(10, 22, 48, 0.04);
+  --shadow-md: 0 4px 6px rgba(10, 22, 48, 0.05), 0 8px 20px rgba(10, 22, 48, 0.07);
+  --shadow-lg: 0 10px 24px rgba(10, 22, 48, 0.08), 0 24px 48px rgba(10, 22, 48, 0.10);
+  --shadow-xl: 0 20px 40px rgba(10, 22, 48, 0.12), 0 40px 80px rgba(10, 22, 48, 0.14);
+  --shadow-gold: 0 8px 30px rgba(181, 85, 31, 0.35);
+  --shadow-navy: 0 12px 40px rgba(10, 22, 48, 0.30);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
+  --color-surface-raised: var(--surface-raised);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-faint: var(--faint);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-navy: var(--navy);
   --color-navy-soft: var(--navy-soft);
+  --color-navy-deep: var(--navy-deep);
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-primary-soft: var(--primary-soft);
   --color-gold: var(--gold);
-  --color-gold-dark: var(--gold-dark);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-deep: var(--gold-deep);
   --color-gold-soft: var(--gold-soft);
   --color-success: var(--success);
   --color-success-bg: var(--success-bg);
@@ -59,6 +95,15 @@
   --color-warning-bg: var(--warning-bg);
   --color-info: var(--info);
   --color-info-bg: var(--info-bg);
+  --color-glass: var(--glass);
+  --color-glass-strong: var(--glass-strong);
+  --color-glass-border: var(--glass-border);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-gold: var(--shadow-gold);
+  --shadow-navy: var(--shadow-navy);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -72,21 +117,38 @@
     --background: #0a1220;
     --surface: #101a2e;
     --surface-alt: #16233c;
+    --surface-raised: #141f38;
     --foreground: #e7eaef;
     --muted: #98a2b3;
     --faint: #6b7788;
     --border: #1e2c48;
+    --border-strong: #2a3a58;
 
     --navy: #060d18;
     --navy-soft: #16305b;
+    --navy-deep: #04080f;
 
     --primary: #6f9fe8;
     --primary-dark: #8fb6ee;
     --primary-soft: #16233c;
+    --primary-glow: rgba(111, 159, 232, 0.30);
 
-    --gold: #d9bd7c;
-    --gold-dark: #c9a961;
-    --gold-soft: #241f14;
+    --gold: #e08a4c;
+    --gold-bright: #f0a868;
+    --gold-deep: #c1622d;
+    --gold-soft: #2e1b10;
+    --gold-glow: rgba(224, 138, 76, 0.35);
+
+    --glass: rgba(16, 26, 46, 0.72);
+    --glass-strong: rgba(16, 26, 46, 0.88);
+    --glass-border: rgba(255, 255, 255, 0.08);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.30), 0 8px 20px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.40), 0 24px 48px rgba(0, 0, 0, 0.45);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.50), 0 40px 80px rgba(0, 0, 0, 0.55);
+    --shadow-gold: 0 8px 30px rgba(224, 138, 76, 0.30);
+    --shadow-navy: 0 12px 40px rgba(0, 0, 0, 0.45);
 
     --success-bg: #10261a;
     --danger-bg: #2b1917;
@@ -99,21 +161,38 @@
   --background: #0a1220;
   --surface: #101a2e;
   --surface-alt: #16233c;
+  --surface-raised: #141f38;
   --foreground: #e7eaef;
   --muted: #98a2b3;
   --faint: #6b7788;
   --border: #1e2c48;
+  --border-strong: #2a3a58;
 
   --navy: #060d18;
   --navy-soft: #16305b;
+  --navy-deep: #04080f;
 
   --primary: #6f9fe8;
   --primary-dark: #8fb6ee;
   --primary-soft: #16233c;
+  --primary-glow: rgba(111, 159, 232, 0.30);
 
   --gold: #d9bd7c;
-  --gold-dark: #c9a961;
+  --gold-bright: #e8c98a;
+  --gold-deep: #b0904a;
   --gold-soft: #241f14;
+  --gold-glow: rgba(217, 184, 124, 0.35);
+
+  --glass: rgba(16, 26, 46, 0.72);
+  --glass-strong: rgba(16, 26, 46, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.30), 0 8px 20px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.40), 0 24px 48px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.50), 0 40px 80px rgba(0, 0, 0, 0.55);
+  --shadow-gold: 0 8px 30px rgba(217, 184, 124, 0.30);
+  --shadow-navy: 0 12px 40px rgba(0, 0, 0, 0.45);
 
   --success-bg: #10261a;
   --danger-bg: #2b1917;
@@ -140,5 +219,99 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Premium surface + animation utilities ---- */
+
+/* A subtle metallic sheen that moves with the cursor — used on the hero
+   headline and the primary CTA so the gold catches light realistically. */
+.gold-sheen {
+  background: linear-gradient(110deg, var(--gold-deep) 0%, var(--gold) 45%, var(--gold-bright) 55%, var(--gold) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: goldSheen 6s linear infinite;
+}
+@keyframes goldSheen {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Lifted card: a soft colored shadow + a hairline top highlight. */
+.card-lift {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
+}
+.card-lift:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+}
+
+/* Glass panel — works on both light and dark themes. */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--glass-border);
+}
+.glass-strong {
+  background: var(--glass-strong);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid var(--glass-border);
+}
+
+/* Section hairline — a 1px rule that fades out at the edges. */
+.section-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+
+/* Floating decorative orb — absolute positioned, blurred, low opacity. */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.55;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Reusable entrance choreography — staggered children fade/slide up. */
+.stagger > * {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: staggerIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.stagger > *:nth-child(3) { animation-delay: 0.16s; }
+.stagger > *:nth-child(4) { animation-delay: 0.24s; }
+.stagger > *:nth-child(5) { animation-delay: 0.32s; }
+.stagger > *:nth-child(6) { animation-delay: 0.40s; }
+.stagger > *:nth-child(7) { animation-delay: 0.48s; }
+.stagger > *:nth-child(8) { animation-delay: 0.56s; }
+@keyframes staggerIn {
+  to { opacity: 1; transform: none; }
+}
+
+/* Marquee fade masks so the strip reads as endless. */
+.marquee-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* Reduced-motion override for the stagger choreography. */
+@media (prefers-reduced-motion: reduce) {
+  .stagger > * {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    opacity: 1;
+    transform: none;
   }
 }

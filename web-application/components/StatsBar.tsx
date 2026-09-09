@@ -58,7 +58,11 @@ export function StatsBar({ propertyCount, cityCount }: { propertyCount: number; 
 
   return (
     <section className="mx-auto max-w-6xl px-4">
-      <div className="grid grid-cols-2 gap-y-8 rounded-2xl bg-navy px-6 py-10 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="relative overflow-hidden rounded-2xl bg-navy shadow-[var(--shadow-navy)]">
+        <span className="orb -right-16 -top-24 h-64 w-64 bg-gold/25" aria-hidden />
+        <span className="orb -left-20 bottom-0 h-56 w-56 bg-primary/25" aria-hidden />
+
+        <div className="relative grid grid-cols-2 gap-y-8 px-6 py-10 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -77,6 +81,7 @@ export function StatsBar({ propertyCount, cityCount }: { propertyCount: number; 
             <span className="text-xs font-medium text-white/55">{stat.label}</span>
           </motion.div>
         ))}
+        </div>
       </div>
     </section>
   );

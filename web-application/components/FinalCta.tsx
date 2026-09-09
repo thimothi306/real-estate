@@ -15,7 +15,7 @@ export function FinalCta() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/register"
-            className="rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-xl"
+            className="rounded-full bg-gold px-8 py-3.5 text-sm font-bold text-white shadow-[var(--shadow-gold)] transition hover:-translate-y-0.5 hover:bg-gold-deep"
           >
             Create free account
           </Link>

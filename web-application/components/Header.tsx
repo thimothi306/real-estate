@@ -14,8 +14,8 @@ export function Header() {
   return (
     <StickyHeaderShell>
       <header className="flex items-center justify-between gap-4 px-4 py-2.5 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-gold text-base">
+        <Link href="/" className="group flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-gold text-base transition-shadow duration-300 group-hover:shadow-[var(--shadow-gold)]">
             🏛
           </span>
           <span className="hidden sm:block">

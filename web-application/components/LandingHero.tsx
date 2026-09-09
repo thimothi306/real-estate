@@ -76,6 +76,11 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/95 to-navy/55" />
 
+      {/* Floating decorative orbs for depth and motion */}
+      <span className="orb pointer-events-none absolute -left-24 top-1/4 h-72 w-72 bg-primary/40" />
+      <span className="orb pointer-events-none absolute right-1/4 top-1/2 h-96 w-96 bg-gold/20" />
+      <span className="orb pointer-events-none absolute -bottom-10 left-1/3 h-64 w-64 bg-navy-soft/60" />
+
       <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-16 sm:pt-20">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-extrabold leading-[1.1] text-white sm:text-5xl lg:text-6xl">
@@ -100,7 +105,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
           </div>
         </div>
 
-        <div className="mt-10 max-w-4xl overflow-hidden rounded-2xl bg-surface shadow-2xl">
+        <div className="mt-10 max-w-4xl overflow-hidden rounded-2xl bg-surface shadow-2xl ring-1 ring-border/60">
           <div className="scroll-x flex border-b border-border" role="tablist" aria-label="Search type">
             {TABS.map((item) => {
               const active = tab.key === item.key;
@@ -135,7 +140,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                   name="q"
                   placeholder="Search location or project"
                   aria-label="Search location or project"
-                  className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-faint focus:border-primary focus:outline-none"
+                  className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-faint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
@@ -144,7 +149,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                 aria-label="Property type"
                 value={propertyType}
                 onChange={(e) => setPropertyType(e.target.value)}
-                className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none"
+                className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
                 {PROPERTY_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>{type.label}</option>
@@ -155,7 +160,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                 name="max_price"
                 aria-label="Budget"
                 defaultValue=""
-                className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none"
+                className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
                 {BUDGETS.map((budget) => (
                   <option key={budget.value} value={budget.value}>{budget.label}</option>
@@ -164,7 +169,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
 
               <button
                 type="submit"
-                className="flex items-center justify-center gap-2 rounded-xl bg-navy px-8 py-3 text-sm font-bold text-white transition hover:bg-navy-soft"
+                className="group flex items-center justify-center gap-2 rounded-xl bg-navy px-8 py-3 text-sm font-bold text-white transition hover:bg-navy-soft hover:shadow-gold hover:ring-2 hover:ring-gold/40"
               >
                 🔍 Search
               </button>
@@ -176,7 +181,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-primary hover:text-primary"
+                  className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-primary hover:text-primary hover:shadow-md"
                 >
                   {item.label}
                 </a>
@@ -187,7 +192,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
       </div>
 
       <div className="pointer-events-none absolute right-6 top-16 hidden xl:block">
-        <div className="flex items-center gap-3 rounded-2xl bg-surface/95 px-5 py-3.5 shadow-xl backdrop-blur">
+        <div className="glass-strong flex items-center gap-3 rounded-2xl px-5 py-3.5 shadow-xl">
           <span className="text-xl text-primary">🛡</span>
           <div>
             <div className="text-lg font-extrabold leading-none text-foreground">
@@ -199,7 +204,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
       </div>
 
       <div className="pointer-events-none absolute bottom-32 right-6 hidden xl:block">
-        <div className="rounded-2xl bg-surface/95 px-5 py-3.5 text-center shadow-xl backdrop-blur">
+        <div className="glass-strong rounded-2xl px-5 py-3.5 text-center shadow-xl">
           <div className="text-sm tracking-tight text-gold">★★★★★</div>
           <div className="mt-1 text-lg font-extrabold leading-none text-foreground">4.8 / 5</div>
           <div className="text-[11px] font-medium text-muted">From 2.3K+ Reviews</div>
