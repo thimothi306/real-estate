@@ -1,70 +1,75 @@
 @import "tailwindcss";
 
 /*
- * Kavuri Estates — premium palette.
+ * Kavuri Estates — premium palette: deep emerald + wine burgundy.
  *
- * Deep navy carries the brand; warm gold is reserved for the single
- * highest-intent action on a screen so it never competes with itself.
- * Surfaces carry a subtle paper-to-metallic gradient that reads as
- * expensive without being shiny. Shadows are deeper and softer than a
- * flat UI, giving every card and panel a physical presence.
+ * Blue-navy read as generic finance/corporate and has been dropped
+ * entirely. Emerald carries the brand instead — it has real meaning for
+ * real estate (land, growth, an appreciating asset) and reads as luxury
+ * in a way navy never did. Burgundy is the single highest-intent accent,
+ * a classic jewel-tone pairing with green (velvet, wine, heritage), used
+ * only where it needs to win the eye. Neutrals shifted warm (ivory, not
+ * blue-white) so the whole system feels like one deliberate choice
+ * rather than the old navy with new labels on it.
+ *
+ * The `--navy` / `--gold` / `--primary` variable names are kept as-is —
+ * renaming them would mean touching every `bg-navy` / `text-gold` class
+ * across the app for no visible benefit. Only the values changed.
  */
 :root {
-  /* Surfaces — warm off-white with a faint blue cast */
-  --background: #f6f8fc;
+  /* Surfaces — warm ivory, no blue cast */
+  --background: #faf8f2;
   --surface: #ffffff;
-  --surface-alt: #eef2f9;
+  --surface-alt: #f1ece0;
   --surface-raised: #ffffff;
 
   /* Text */
-  --foreground: #0d1830;
-  --muted: #5a6680;
-  --faint: #8a93a8;
-  --border: #e2e8f3;
-  --border-strong: #cdd7e8;
+  --foreground: #16241d;
+  --muted: #6b6f63;
+  --faint: #9a9d8e;
+  --border: #e6e0cf;
+  --border-strong: #d4cbb0;
 
-  /* Navy scale — deeper and richer */
-  --navy: #0a1630;
-  --navy-soft: #142a52;
-  --navy-deep: #060d20;
+  /* "Navy" scale → deep emerald. The brand anchor. */
+  --navy: #0d3b2e;
+  --navy-soft: #175a46;
+  --navy-deep: #082720;
 
-  /* Primary — soft steel blue for interactive elements */
-  --primary: #1f3b6e;
-  --primary-dark: #142a52;
-  --primary-soft: #eef3fb;
-  --primary-glow: rgba(31, 59, 110, 0.25);
+  /* Primary — bright jade for interactive elements (links, focus, badges) */
+  --primary: #1f8f6c;
+  --primary-dark: #146b52;
+  --primary-soft: #e8f6f0;
+  --primary-glow: rgba(31, 143, 108, 0.25);
 
-  /* Gold token, now a rich burnished copper/terracotta — reads as
-     "property, earth, craft" rather than the generic navy+gold finance
-     look, while keeping the same one-accent-only discipline. */
-  --gold: #b5551f;
-  --gold-bright: #d97f42;
-  --gold-deep: #8a3f16;
-  --gold-soft: #fbeee3;
-  --gold-glow: rgba(181, 85, 31, 0.4);
+  /* "Gold" token → deep wine burgundy, the one highest-intent accent. */
+  --gold: #7c2436;
+  --gold-bright: #9c3349;
+  --gold-deep: #591a27;
+  --gold-soft: #f8e9eb;
+  --gold-glow: rgba(124, 36, 54, 0.35);
 
   /* Semantic */
-  --success: #157347;
-  --success-bg: #e7f3ec;
+  --success: #3d7a4a;
+  --success-bg: #eaf3ec;
   --danger: #b42318;
   --danger-bg: #fdeceb;
   --warning: #a15c07;
   --warning-bg: #fdf3e3;
-  --info: #175cd3;
-  --info-bg: #eaf1fe;
+  --info: #0e7490;
+  --info-bg: #e6f4f7;
 
   /* Overlay tints for glass panels */
-  --glass: rgba(255, 255, 255, 0.72);
-  --glass-strong: rgba(255, 255, 255, 0.85);
+  --glass: rgba(255, 253, 248, 0.72);
+  --glass-strong: rgba(255, 253, 248, 0.85);
   --glass-border: rgba(255, 255, 255, 0.6);
 
   /* Shadows — softer, deeper, with a colored cast */
-  --shadow-sm: 0 1px 2px rgba(10, 22, 48, 0.06), 0 1px 3px rgba(10, 22, 48, 0.04);
-  --shadow-md: 0 4px 6px rgba(10, 22, 48, 0.05), 0 8px 20px rgba(10, 22, 48, 0.07);
-  --shadow-lg: 0 10px 24px rgba(10, 22, 48, 0.08), 0 24px 48px rgba(10, 22, 48, 0.10);
-  --shadow-xl: 0 20px 40px rgba(10, 22, 48, 0.12), 0 40px 80px rgba(10, 22, 48, 0.14);
-  --shadow-gold: 0 8px 30px rgba(181, 85, 31, 0.35);
-  --shadow-navy: 0 12px 40px rgba(10, 22, 48, 0.30);
+  --shadow-sm: 0 1px 2px rgba(22, 36, 29, 0.06), 0 1px 3px rgba(22, 36, 29, 0.04);
+  --shadow-md: 0 4px 6px rgba(22, 36, 29, 0.05), 0 8px 20px rgba(22, 36, 29, 0.07);
+  --shadow-lg: 0 10px 24px rgba(22, 36, 29, 0.08), 0 24px 48px rgba(22, 36, 29, 0.10);
+  --shadow-xl: 0 20px 40px rgba(22, 36, 29, 0.12), 0 40px 80px rgba(22, 36, 29, 0.14);
+  --shadow-gold: 0 8px 30px rgba(124, 36, 54, 0.35);
+  --shadow-navy: 0 12px 40px rgba(13, 59, 46, 0.30);
 }
 
 @theme inline {
@@ -114,90 +119,90 @@
  */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0a1220;
-    --surface: #101a2e;
-    --surface-alt: #16233c;
-    --surface-raised: #141f38;
-    --foreground: #e7eaef;
-    --muted: #98a2b3;
-    --faint: #6b7788;
-    --border: #1e2c48;
-    --border-strong: #2a3a58;
+    --background: #0a1512;
+    --surface: #0f2119;
+    --surface-alt: #142c21;
+    --surface-raised: #132720;
+    --foreground: #eaf0ec;
+    --muted: #9bb0a3;
+    --faint: #6d8277;
+    --border: #1c3226;
+    --border-strong: #294536;
 
-    --navy: #060d18;
-    --navy-soft: #16305b;
-    --navy-deep: #04080f;
+    --navy: #082821;
+    --navy-soft: #1c4a3a;
+    --navy-deep: #051813;
 
-    --primary: #6f9fe8;
-    --primary-dark: #8fb6ee;
-    --primary-soft: #16233c;
-    --primary-glow: rgba(111, 159, 232, 0.30);
+    --primary: #4fd8a8;
+    --primary-dark: #7ce6c0;
+    --primary-soft: #142c21;
+    --primary-glow: rgba(79, 216, 168, 0.30);
 
-    --gold: #e08a4c;
-    --gold-bright: #f0a868;
-    --gold-deep: #c1622d;
-    --gold-soft: #2e1b10;
-    --gold-glow: rgba(224, 138, 76, 0.35);
+    --gold: #c65a71;
+    --gold-bright: #d97e91;
+    --gold-deep: #a13e54;
+    --gold-soft: #2c151a;
+    --gold-glow: rgba(198, 90, 113, 0.35);
 
-    --glass: rgba(16, 26, 46, 0.72);
-    --glass-strong: rgba(16, 26, 46, 0.88);
+    --glass: rgba(15, 33, 25, 0.72);
+    --glass-strong: rgba(15, 33, 25, 0.88);
     --glass-border: rgba(255, 255, 255, 0.08);
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.25);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.30), 0 8px 20px rgba(0, 0, 0, 0.35);
     --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.40), 0 24px 48px rgba(0, 0, 0, 0.45);
     --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.50), 0 40px 80px rgba(0, 0, 0, 0.55);
-    --shadow-gold: 0 8px 30px rgba(224, 138, 76, 0.30);
+    --shadow-gold: 0 8px 30px rgba(198, 90, 113, 0.30);
     --shadow-navy: 0 12px 40px rgba(0, 0, 0, 0.45);
 
-    --success-bg: #10261a;
+    --success-bg: #12261a;
     --danger-bg: #2b1917;
     --warning-bg: #2a2013;
-    --info-bg: #12213c;
+    --info-bg: #0f2b30;
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #0a1220;
-  --surface: #101a2e;
-  --surface-alt: #16233c;
-  --surface-raised: #141f38;
-  --foreground: #e7eaef;
-  --muted: #98a2b3;
-  --faint: #6b7788;
-  --border: #1e2c48;
-  --border-strong: #2a3a58;
+  --background: #0a1512;
+  --surface: #0f2119;
+  --surface-alt: #142c21;
+  --surface-raised: #132720;
+  --foreground: #eaf0ec;
+  --muted: #9bb0a3;
+  --faint: #6d8277;
+  --border: #1c3226;
+  --border-strong: #294536;
 
-  --navy: #060d18;
-  --navy-soft: #16305b;
-  --navy-deep: #04080f;
+  --navy: #082821;
+  --navy-soft: #1c4a3a;
+  --navy-deep: #051813;
 
-  --primary: #6f9fe8;
-  --primary-dark: #8fb6ee;
-  --primary-soft: #16233c;
-  --primary-glow: rgba(111, 159, 232, 0.30);
+  --primary: #4fd8a8;
+  --primary-dark: #7ce6c0;
+  --primary-soft: #142c21;
+  --primary-glow: rgba(79, 216, 168, 0.30);
 
-  --gold: #d9bd7c;
-  --gold-bright: #e8c98a;
-  --gold-deep: #b0904a;
-  --gold-soft: #241f14;
-  --gold-glow: rgba(217, 184, 124, 0.35);
+  --gold: #c65a71;
+  --gold-bright: #d97e91;
+  --gold-deep: #a13e54;
+  --gold-soft: #2c151a;
+  --gold-glow: rgba(198, 90, 113, 0.35);
 
-  --glass: rgba(16, 26, 46, 0.72);
-  --glass-strong: rgba(16, 26, 46, 0.88);
+  --glass: rgba(15, 33, 25, 0.72);
+  --glass-strong: rgba(15, 33, 25, 0.88);
   --glass-border: rgba(255, 255, 255, 0.08);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.30), 0 8px 20px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.40), 0 24px 48px rgba(0, 0, 0, 0.45);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.50), 0 40px 80px rgba(0, 0, 0, 0.55);
-  --shadow-gold: 0 8px 30px rgba(217, 184, 124, 0.30);
+  --shadow-gold: 0 8px 30px rgba(198, 90, 113, 0.30);
   --shadow-navy: 0 12px 40px rgba(0, 0, 0, 0.45);
 
-  --success-bg: #10261a;
+  --success-bg: #12261a;
   --danger-bg: #2b1917;
   --warning-bg: #2a2013;
-  --info-bg: #12213c;
+  --info-bg: #0f2b30;
 }
 
 body {
