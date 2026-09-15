@@ -144,6 +144,7 @@ export function canCreateListings(user: User | null): boolean {
 export const PARTNER_ROLES = [
   'interior_designer', 'loan_partner', 'legal_consultant',
   'property_manager', 'rental_manager', 'packers_movers', 'govt_registration_partner',
+  'service_provider',
 ];
 
 export function isPartner(user: User | null): boolean {

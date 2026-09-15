@@ -16,6 +16,16 @@ const CATEGORY_ICONS: Record<string, string> = {
   'tenant-verification': '🔍',
   'moving-services': '📦',
   'home-services': '🔧',
+  'plumbing-water': '🚿',
+  'electrical-electronics': '⚡',
+  'home-renovation-repairs': '🪚',
+  'cleaning-housekeeping': '🧹',
+  'outdoor-garden': '🌳',
+  'security-staffing': '💂',
+  'household-staff': '👨‍🍳',
+  'construction-civil-works': '🏗️',
+  'commercial-property-services': '🏬',
+  'utility-services': '📡',
 };
 
 export function ServiceHubScreen({ navigation }: any) {
@@ -35,13 +45,18 @@ export function ServiceHubScreen({ navigation }: any) {
 
   return (
     <View style={styles.screen}>
-      {isPartner(user) && (
+      {isPartner(user) ? (
         <View style={styles.partnerBanner}>
           <Text style={styles.partnerBannerText}>You have a service provider account.</Text>
           <View style={styles.partnerBannerActions}>
             <Button title="My request queue" variant="secondary" onPress={() => navigation.navigate('ServiceQueue')} />
             <Button title="My profile" variant="secondary" onPress={() => navigation.navigate('PartnerProfile')} />
           </View>
+        </View>
+      ) : (
+        <View style={styles.partnerBanner}>
+          <Text style={styles.partnerBannerText}>Are you a plumber, electrician, or other professional?</Text>
+          <Button title="Become a Service Provider" variant="secondary" onPress={() => navigation.navigate('PartnerProfile')} />
         </View>
       )}
 

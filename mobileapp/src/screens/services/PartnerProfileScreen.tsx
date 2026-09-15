@@ -10,6 +10,7 @@ import { colors, radius, spacing } from '../../theme';
 export function PartnerProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
+  const [profession, setProfession] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [bio, setBio] = useState('');
   const [city, setCity] = useState('');
@@ -26,6 +27,7 @@ export function PartnerProfileScreen() {
         setCategories(cats);
 
         if (profile) {
+          setProfession(profile.profession ?? '');
           setBusinessName(profile.business_name);
           setBio(profile.bio ?? '');
           setCity(profile.cities_served?.[0] ?? '');
@@ -49,6 +51,7 @@ export function PartnerProfileScreen() {
 
     try {
       await updatePartnerProfile({
+        profession: profession.trim(),
         business_name: businessName.trim(),
         bio: bio.trim() || undefined,
         cities_served: city.trim() ? [city.trim()] : undefined,
@@ -77,6 +80,7 @@ export function PartnerProfileScreen() {
         {!!error && <Banner tone="error" message={error} />}
         {!!notice && <Banner tone="success" message={notice} />}
 
+        <Field label="Primary profession" value={profession} onChangeText={setProfession} placeholder="e.g. Plumber, Electrician, House Maid" />
         <Field label="Business name" value={businessName} onChangeText={setBusinessName} placeholder="Your business or trade name" />
         <Field label="Bio" value={bio} onChangeText={setBio} multiline placeholder="Tell buyers about your experience" />
         <Field label="City you serve" value={city} onChangeText={setCity} placeholder="Hyderabad" />

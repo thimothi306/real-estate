@@ -31,6 +31,8 @@ export type ServiceRequestSummary = {
   status: ServiceRequestStatus;
   budget_min: number | null;
   budget_max: number | null;
+  urgency: 'immediate' | 'today' | 'tomorrow' | 'this_week' | null;
+  location: string | null;
   category?: { id: number; name: string; slug: string };
   property?: { id: number; title: string; slug: string; city: string };
   assigned_partner?: { id: number; name: string; phone: string };
@@ -55,6 +57,8 @@ export async function createServiceRequest(payload: {
   description?: string;
   budget_min?: number;
   budget_max?: number;
+  urgency?: 'immediate' | 'today' | 'tomorrow' | 'this_week';
+  location?: string;
 }) {
   const result = await request<ServiceRequestDetail>('/service-requests', { method: 'POST', body: payload });
   return result.data;

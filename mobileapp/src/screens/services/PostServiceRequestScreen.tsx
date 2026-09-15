@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ApiError } from '../../api/client';
 import { createServiceRequest, type ServiceCategory } from '../../api/services';
 import { Banner, Button, Field } from '../../components/ui';
-import { colors, spacing } from '../../theme';
+import { colors, radius, spacing } from '../../theme';
+
+const URGENCY_OPTIONS: { value: 'immediate' | 'today' | 'tomorrow' | 'this_week'; label: string }[] = [
+  { value: 'immediate', label: 'Immediate' },
+  { value: 'today', label: 'Today' },
+  { value: 'tomorrow', label: 'Tomorrow' },
+  { value: 'this_week', label: 'This week' },
+];
 
 export function PostServiceRequestScreen({ navigation, route }: any) {
   const { category } = route.params as { category: ServiceCategory };
@@ -13,6 +20,8 @@ export function PostServiceRequestScreen({ navigation, route }: any) {
   const [description, setDescription] = useState('');
   const [budgetMin, setBudgetMin] = useState('');
   const [budgetMax, setBudgetMax] = useState('');
+  const [urgency, setUrgency] = useState<'immediate' | 'today' | 'tomorrow' | 'this_week'>('this_week');
+  const [location, setLocation] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -29,6 +38,8 @@ export function PostServiceRequestScreen({ navigation, route }: any) {
         description: description.trim() || undefined,
         budget_min: budgetMin ? Number(budgetMin.replace(/\D/g, '')) : undefined,
         budget_max: budgetMax ? Number(budgetMax.replace(/\D/g, '')) : undefined,
+        urgency,
+        location: location.trim() || undefined,
       });
 
       navigation.replace('MyServiceRequests');
@@ -89,6 +100,29 @@ export function PostServiceRequestScreen({ navigation, route }: any) {
           placeholder="5000"
         />
 
+        <Text style={styles.groupLabel}>Urgency</Text>
+        <View style={styles.chipRow}>
+          {URGENCY_OPTIONS.map((option) => {
+            const selected = urgency === option.value;
+            return (
+              <Pressable
+                key={option.value}
+                onPress={() => setUrgency(option.value)}
+                style={[styles.chip, selected && styles.chipActive]}
+              >
+                <Text style={[styles.chipText, selected && styles.chipTextActive]}>{option.label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        <Field
+          label="Location (optional)"
+          value={location}
+          onChangeText={setLocation}
+          placeholder="e.g. Kondapur, Hyderabad"
+        />
+
         <Button title="Post request" onPress={handleSubmit} loading={saving} />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -101,4 +135,17 @@ const styles = StyleSheet.create({
   heading: { fontSize: 21, fontWeight: '700', color: colors.text },
   subheading: { fontSize: 13, color: colors.muted, marginTop: 4, marginBottom: spacing.xl, lineHeight: 18 },
   textArea: { height: 100, textAlignVertical: 'top' },
+  groupLabel: { fontSize: 13, fontWeight: '600', color: colors.text, marginBottom: spacing.sm },
+  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg },
+  chip: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: 7,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  chipText: { fontSize: 12.5, color: colors.text },
+  chipTextActive: { color: '#fff', fontWeight: '600' },
 });

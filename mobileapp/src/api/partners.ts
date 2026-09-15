@@ -4,6 +4,7 @@ import type { Paginated } from './types';
 export type PartnerProfile = {
   id: number;
   user_id: number;
+  profession: string | null;
   business_name: string;
   bio: string | null;
   cities_served: string[] | null;
@@ -32,6 +33,7 @@ export async function getMyPartnerProfile() {
 }
 
 export async function updatePartnerProfile(payload: {
+  profession: string;
   business_name: string;
   bio?: string;
   cities_served?: string[];

@@ -12,6 +12,7 @@ export type Role =
   | 'rental_manager'
   | 'packers_movers'
   | 'govt_registration_partner'
+  | 'service_provider'
   | 'admin';
 
 export type User = {
