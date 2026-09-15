@@ -104,6 +104,10 @@ export function authPost<T>(path: string, token: string, body?: unknown) {
   return authFetch<T>(path, { method: 'POST', token, body });
 }
 
+export function authPut<T>(path: string, token: string, body?: unknown) {
+  return authFetch<T>(path, { method: 'PUT', token, body });
+}
+
 export function authPatch<T>(path: string, token: string, body?: unknown) {
   return authFetch<T>(path, { method: 'PATCH', token, body });
 }

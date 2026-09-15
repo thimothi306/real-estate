@@ -12,6 +12,7 @@ export type Role =
   | 'rental_manager'
   | 'packers_movers'
   | 'govt_registration_partner'
+  | 'service_provider'
   | 'admin';
 
 export type User = {
@@ -164,6 +165,59 @@ export type ServiceCategory = {
   icon: string | null;
   description: string | null;
   is_property_specific: boolean;
+};
+
+export type PartnerProfile = {
+  id: number;
+  user_id: number;
+  profession: string | null;
+  business_name: string;
+  bio: string | null;
+  cities_served: string[] | null;
+  years_experience: string | null;
+  is_verified: boolean;
+  total_completed: number;
+  rating_avg: number | null;
+  rating_count: number;
+  user?: { id: number; name: string; phone: string; city: string | null };
+  categories?: { id: number; name: string; slug: string }[];
+  created_at: string | null;
+};
+
+export type ServiceRequestStatus = 'open' | 'quoted' | 'accepted' | 'in_progress' | 'completed' | 'cancelled';
+
+export type ServiceQuote = {
+  id: number;
+  service_request_id: number;
+  partner_id: number;
+  amount: number;
+  message: string | null;
+  status: 'pending' | 'accepted' | 'rejected' | 'withdrawn';
+  valid_until: string | null;
+  partner?: { id: number; name: string; phone: string };
+  request?: { id: number; title: string; status: string };
+};
+
+export type ServiceRequestSummary = {
+  id: number;
+  title: string;
+  description: string | null;
+  status: ServiceRequestStatus;
+  budget_min: number | null;
+  budget_max: number | null;
+  urgency: 'immediate' | 'today' | 'tomorrow' | 'this_week' | null;
+  location: string | null;
+  category?: { id: number; name: string; slug: string };
+  property?: { id: number; title: string; slug: string; city: string } | null;
+  assigned_partner?: { id: number; name: string; phone: string } | null;
+  quotes_count?: number;
+  created_at: string;
+};
+
+export type ServiceRequestDetail = ServiceRequestSummary & {
+  requester?: { id: number; name: string; phone: string };
+  quotes?: ServiceQuote[];
+  accepted_quote?: ServiceQuote | null;
 };
 
 export type SubscriptionPlan = {

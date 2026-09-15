@@ -1,4 +1,12 @@
-import type { Paginated, PropertyDetail, PropertySummary, SearchFilters, ServiceCategory, SubscriptionPlan } from './types';
+import type {
+  PartnerProfile,
+  Paginated,
+  PropertyDetail,
+  PropertySummary,
+  SearchFilters,
+  ServiceCategory,
+  SubscriptionPlan,
+} from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8000/api/v1';
 
@@ -160,5 +168,40 @@ export async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
     return await apiFetch<SubscriptionPlan[]>('/subscription-plans', { revalidate: 3600 });
   } catch {
     return [];
+  }
+}
+
+export async function getPartnerDirectory(filters: { category?: string; city?: string } = {}): Promise<Paginated<PartnerProfile>> {
+  const empty = { items: [], currentPage: 1, lastPage: 1, total: 0 };
+  const path = `/partners${buildQuery(filters)}`;
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      headers: { Accept: 'application/json' },
+      next: { revalidate: 60 },
+    });
+  } catch {
+    return empty;
+  }
+
+  if (!response.ok) return empty;
+
+  const payload = await readJson<PartnerProfile[]>(response, path);
+  if (!payload) return empty;
+
+  return {
+    items: payload.data ?? [],
+    currentPage: 1,
+    lastPage: 1,
+    total: payload.meta?.total ?? 0,
+  };
+}
+
+export async function getPartner(userId: number): Promise<PartnerProfile | null> {
+  try {
+    return await apiFetch<PartnerProfile>(`/partners/${userId}`, { revalidate: 60 });
+  } catch {
+    return null;
   }
 }

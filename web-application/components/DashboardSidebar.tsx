@@ -26,10 +26,13 @@ const SECTIONS: {
     ],
   },
   {
-    label: 'Services',
+    label: 'Kavuri Connect',
     items: [
       { href: '/home-loan', icon: '🏦', label: 'Home Loan' },
       { href: '/services', icon: '🛠', label: 'All Services' },
+      { href: '/dashboard/service-requests', icon: '📋', label: 'My Service Requests' },
+      { href: '/dashboard/provider', icon: '🧰', label: 'My Provider Profile' },
+      { href: '/dashboard/provider/queue', icon: '📥', label: 'Open Requests' },
     ],
   },
 ];

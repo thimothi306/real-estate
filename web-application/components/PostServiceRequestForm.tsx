@@ -15,6 +15,8 @@ export function PostServiceRequestForm({ categories }: { categories: ServiceCate
   const [description, setDescription] = useState('');
   const [budgetMin, setBudgetMin] = useState('');
   const [budgetMax, setBudgetMax] = useState('');
+  const [urgency, setUrgency] = useState('this_week');
+  const [location, setLocation] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -48,12 +50,16 @@ export function PostServiceRequestForm({ categories }: { categories: ServiceCate
         description: description.trim() || undefined,
         budget_min: budgetMin ? Number(budgetMin) : undefined,
         budget_max: budgetMax ? Number(budgetMax) : undefined,
+        urgency,
+        location: location.trim() || undefined,
       });
       setSuccess(true);
       setTitle('');
       setDescription('');
       setBudgetMin('');
       setBudgetMax('');
+      setUrgency('this_week');
+      setLocation('');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not submit your request.');
     } finally {
@@ -138,6 +144,32 @@ export function PostServiceRequestForm({ categories }: { categories: ServiceCate
             min={0}
             value={budgetMax}
             onChange={(e) => setBudgetMax(e.target.value)}
+            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="mb-1.5 block text-sm font-semibold text-foreground">Urgency</label>
+          <select
+            value={urgency}
+            onChange={(e) => setUrgency(e.target.value)}
+            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none"
+          >
+            <option value="immediate">Immediate</option>
+            <option value="today">Today</option>
+            <option value="tomorrow">Tomorrow</option>
+            <option value="this_week">This week</option>
+          </select>
+        </div>
+        <div>
+          <label className="mb-1.5 block text-sm font-semibold text-foreground">Location</label>
+          <input
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            maxLength={255}
+            placeholder="e.g. Kondapur, Hyderabad"
             className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none"
           />
         </div>
