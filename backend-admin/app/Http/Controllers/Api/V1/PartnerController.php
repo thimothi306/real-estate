@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PartnerProfileResource;
 use App\Models\PartnerProfile;
 use App\Models\ServiceCategory;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
@@ -62,9 +63,17 @@ class PartnerController extends Controller
     public function updateProfile(Request $request)
     {
         $user = $request->user();
-        abort_unless($user->isPartner(), 403, 'Only partner accounts have a service profile.');
+
+        // Self-service onboarding: filling out a professional profile is what
+        // makes a plain buyer/owner/tenant a provider — no separate "become a
+        // provider" endpoint. Pre-defined partner roles (loan_partner, etc.)
+        // and admin are untouched.
+        if (!$user->isPartner() && $user->role !== User::ROLE_ADMIN) {
+            $user->update(['role' => User::ROLE_SERVICE_PROVIDER]);
+        }
 
         $data = $request->validate([
+            'profession' => ['required', 'string', 'max:100'],
             'business_name' => ['required', 'string', 'max:150'],
             'bio' => ['nullable', 'string', 'max:1000'],
             'cities_served' => ['nullable', 'array'],

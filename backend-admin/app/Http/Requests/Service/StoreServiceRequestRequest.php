@@ -20,6 +20,8 @@ class StoreServiceRequestRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:2000'],
             'budget_min' => ['nullable', 'numeric', 'min:0'],
             'budget_max' => ['nullable', 'numeric', 'min:0', 'gte:budget_min'],
+            'urgency' => ['nullable', 'in:immediate,today,tomorrow,this_week'],
+            'location' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

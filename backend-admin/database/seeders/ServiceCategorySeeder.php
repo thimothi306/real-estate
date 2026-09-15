@@ -68,9 +68,76 @@ class ServiceCategorySeeder extends Seeder
             ],
             [
                 'name' => 'Home Services',
-                'partner_roles' => [User::ROLE_PROPERTY_MANAGER, User::ROLE_PACKERS_MOVERS],
+                'partner_roles' => [User::ROLE_PROPERTY_MANAGER, User::ROLE_PACKERS_MOVERS, User::ROLE_SERVICE_PROVIDER],
                 'is_property_specific' => true,
-                'description' => 'General home repair and maintenance services.',
+                'description' => 'General home repair and maintenance — catch-all for anything not covered below.',
+            ],
+
+            // Kavuri Connect — hyperlocal trade categories. Any user can self-register
+            // as a provider under these (see PartnerController::updateProfile), unlike
+            // the pre-defined partner-role verticals above. Grouped at the category
+            // level per the spec rather than one row per granular trade (e.g. "Plumber"
+            // vs "Borewell Technician") — the provider's specific trade is captured in
+            // PartnerProfile::profession instead, keeping this an MVP-sized list.
+            [
+                'name' => 'Plumbing & Water',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Plumbers, borewell technicians, water tank cleaning, RO repair.',
+            ],
+            [
+                'name' => 'Electrical & Electronics',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Electricians, AC/appliance repair, CCTV and Wi-Fi installation.',
+            ],
+            [
+                'name' => 'Home Renovation & Repairs',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Carpentry, painting, masonry, tiling, false ceiling, waterproofing.',
+            ],
+            [
+                'name' => 'Cleaning & Housekeeping',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Deep cleaning, housekeeping staff, water tank and sofa cleaning.',
+            ],
+            [
+                'name' => 'Outdoor & Garden',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Gardening, lawn care, pest control, swimming pool maintenance.',
+            ],
+            [
+                'name' => 'Security & Staffing',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Security guards, watchmen, caretakers, facility staff.',
+            ],
+            [
+                'name' => 'Household Staff',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => false,
+                'description' => 'Cooks, maids, drivers, caregivers, laundry service.',
+            ],
+            [
+                'name' => 'Construction & Civil Works',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Civil contractors, labour contractors, structural work.',
+            ],
+            [
+                'name' => 'Commercial Property Services',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Office cleaning, reception staff, HVAC and fire-safety maintenance.',
+            ],
+            [
+                'name' => 'Utility Services',
+                'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+                'is_property_specific' => true,
+                'description' => 'Broadband, DTH, LPG, electricity/water connection assistance.',
             ],
         ];
 

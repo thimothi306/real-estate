@@ -110,6 +110,44 @@ class ServiceMarketplaceTest extends TestCase
         $this->assertDatabaseHas('service_quotes', ['partner_id' => $partnerB->id, 'status' => 'rejected']);
     }
 
+    public function test_a_buyer_becomes_a_service_provider_by_saving_a_partner_profile(): void
+    {
+        $buyer = User::factory()->create(['role' => User::ROLE_BUYER]);
+        $category = ServiceCategory::create([
+            'name' => 'Plumbing & Water',
+            'slug' => 'plumbing-water',
+            'partner_roles' => [User::ROLE_SERVICE_PROVIDER],
+            'is_property_specific' => true,
+        ]);
+
+        $response = $this->actingAs($buyer, 'sanctum')->putJson('/api/v1/my/partner-profile', [
+            'profession' => 'Plumber',
+            'business_name' => 'Ramesh Plumbing Services',
+            'years_experience' => '12',
+            'category_ids' => [$category->id],
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.profession', 'Plumber')
+            ->assertJsonPath('data.categories.0.id', $category->id);
+
+        $this->assertSame(User::ROLE_SERVICE_PROVIDER, $buyer->fresh()->role);
+
+        // Now eligible to quote on requests in that category, like any other partner role.
+        $serviceRequest = ServiceRequest::create([
+            'user_id' => User::factory()->create()->id,
+            'service_category_id' => $category->id,
+            'title' => 'Need a Plumber for Bathroom Leakage',
+            'urgency' => 'today',
+            'location' => 'Kondapur, Hyderabad',
+            'status' => ServiceRequest::STATUS_OPEN,
+        ]);
+
+        $this->actingAs($buyer->fresh(), 'sanctum')
+            ->postJson("/api/v1/service-requests/{$serviceRequest->id}/quotes", ['amount' => 1500])
+            ->assertStatus(201);
+    }
+
     public function test_partner_directory_hides_unverified_profiles(): void
     {
         $partner = User::factory()->create(['role' => User::ROLE_RENTAL_MANAGER]);

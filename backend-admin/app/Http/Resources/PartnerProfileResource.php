@@ -11,6 +11,7 @@ class PartnerProfileResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'profession' => $this->profession,
             'business_name' => $this->business_name,
             'bio' => $this->bio,
             'cities_served' => $this->cities_served,

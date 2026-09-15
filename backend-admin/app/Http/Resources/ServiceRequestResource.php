@@ -15,6 +15,8 @@ class ServiceRequestResource extends JsonResource
             'status' => $this->status,
             'budget_min' => $this->budget_min !== null ? (float) $this->budget_min : null,
             'budget_max' => $this->budget_max !== null ? (float) $this->budget_max : null,
+            'urgency' => $this->urgency,
+            'location' => $this->location,
             'category' => $this->whenLoaded('category', fn () => [
                 'id' => $this->category->id,
                 'name' => $this->category->name,

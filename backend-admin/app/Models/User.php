@@ -25,6 +25,9 @@ class User extends Authenticatable
     public const ROLE_RENTAL_MANAGER = 'rental_manager';
     public const ROLE_PACKERS_MOVERS = 'packers_movers';
     public const ROLE_GOVT_REGISTRATION_PARTNER = 'govt_registration_partner';
+    // Generic self-service provider — anyone can become one via PartnerController::updateProfile,
+    // unlike the roles above which represent pre-defined real-estate-transaction partner types.
+    public const ROLE_SERVICE_PROVIDER = 'service_provider';
     public const ROLE_ADMIN = 'admin';
 
     /** Roles that fulfil service requests (see ServiceCategory::partner_roles). */
@@ -36,6 +39,7 @@ class User extends Authenticatable
         self::ROLE_RENTAL_MANAGER,
         self::ROLE_PACKERS_MOVERS,
         self::ROLE_GOVT_REGISTRATION_PARTNER,
+        self::ROLE_SERVICE_PROVIDER,
     ];
 
     protected $fillable = [

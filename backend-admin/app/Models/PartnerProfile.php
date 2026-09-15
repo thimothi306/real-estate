@@ -10,7 +10,7 @@ class PartnerProfile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'business_name', 'bio', 'cities_served', 'years_experience',
+        'user_id', 'profession', 'business_name', 'bio', 'cities_served', 'years_experience',
         'is_verified', 'verified_by', 'verified_at', 'total_completed', 'rating_avg', 'rating_count',
     ];
 

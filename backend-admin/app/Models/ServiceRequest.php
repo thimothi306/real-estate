@@ -18,7 +18,8 @@ class ServiceRequest extends Model
 
     protected $fillable = [
         'user_id', 'service_category_id', 'property_id', 'title', 'description',
-        'budget_min', 'budget_max', 'status', 'accepted_quote_id', 'assigned_partner_id', 'completed_at',
+        'budget_min', 'budget_max', 'urgency', 'location', 'status', 'accepted_quote_id',
+        'assigned_partner_id', 'completed_at',
     ];
 
     protected $casts = [
