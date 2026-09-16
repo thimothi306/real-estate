@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Otp;
 use App\Models\User;
+use App\Services\OtpService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -105,6 +107,42 @@ class AuthTest extends TestCase
 
         $response->assertStatus(422);
         $this->assertDatabaseHas('users', ['id' => $user->id, 'status' => 'pending']);
+    }
+
+    public function test_otp_bypass_generates_the_fixed_code_instead_of_a_random_one(): void
+    {
+        // No real SMS gateway is wired up yet (see OtpService::dispatch) —
+        // this flag stands in for it during that gap. Must stay off
+        // (OTP_BYPASS_ENABLED=false) once a real provider is integrated.
+        Config::set('otp.bypass_enabled', true);
+        Config::set('otp.bypass_code', '654321');
+
+        app(OtpService::class)->generateAndSend('+919876543299', 'registration');
+
+        $otp = Otp::where('phone', '+919876543299')->latest('id')->first();
+        $this->assertTrue(Hash::check('654321', $otp->code_hash));
+
+        $response = $this->postJson('/api/v1/auth/otp/send', [
+            'phone' => '+919876543298',
+            'purpose' => 'registration',
+        ]);
+        $response->assertStatus(200);
+
+        $sent = Otp::where('phone', '+919876543298')->latest('id')->first();
+        $this->assertTrue(Hash::check('654321', $sent->code_hash));
+    }
+
+    public function test_otp_bypass_off_generates_a_random_code(): void
+    {
+        // .env.example ships with this off; a local .env may have it on
+        // while no real SMS gateway is wired up, so set it explicitly
+        // rather than assuming the ambient config value.
+        Config::set('otp.bypass_enabled', false);
+
+        app(OtpService::class)->generateAndSend('+919876543297', 'registration');
+
+        $otp = Otp::where('phone', '+919876543297')->latest('id')->first();
+        $this->assertFalse(Hash::check('123456', $otp->code_hash));
     }
 
     public function test_a_user_can_log_in_with_correct_credentials(): void

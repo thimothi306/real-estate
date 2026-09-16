@@ -11,7 +11,12 @@ class OtpService
 {
     public function generateAndSend(string $phone, string $purpose, ?string $ip = null): Otp
     {
-        $code = (string) random_int(100000, 999999);
+        $bypass = (bool) config('otp.bypass_enabled', false);
+        $code = $bypass ? (string) config('otp.bypass_code', '123456') : (string) random_int(100000, 999999);
+
+        if ($bypass) {
+            Log::channel('single')->warning("OTP bypass active — {$phone} can verify with the default code instead of a real SMS.");
+        }
 
         $otp = Otp::create([
             'phone' => $phone,
