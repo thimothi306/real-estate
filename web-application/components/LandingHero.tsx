@@ -83,7 +83,10 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
 
       <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-16 sm:pt-20">
         <div className="max-w-2xl">
-          <h1 className="text-4xl font-extrabold leading-[1.1] text-white sm:text-5xl lg:text-6xl">
+          <span className="glass inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide text-gold">
+            ✨ AI-Powered Search
+          </span>
+          <h1 className="mt-4 text-4xl font-extrabold leading-[1.1] text-white sm:text-5xl lg:text-6xl">
             One App for
             <br />
             Every Property Need<span className="text-gold">.</span>
@@ -175,19 +178,64 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               </button>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="text-xs font-semibold text-muted">Popular Searches:</span>
-              {POPULAR.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-primary hover:text-primary hover:shadow-md"
-                >
-                  {item.label}
-                </a>
-              ))}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-muted">Popular Searches:</span>
+                {POPULAR.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-primary hover:text-primary hover:shadow-md"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+              <a
+                href="/properties/new"
+                className="shrink-0 rounded-full bg-gold px-4 py-1.5 text-xs font-bold text-white shadow-[var(--shadow-gold)] transition hover:bg-gold-deep"
+              >
+                Post Property for Free
+              </a>
             </div>
           </form>
+        </div>
+
+        <p className="mt-4 max-w-2xl text-xs font-medium text-white/60 sm:text-sm">
+          Any city, any kind of property, every property-related service — all in one place.
+        </p>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a
+            href="/properties/new"
+            className="card-lift flex items-center gap-3 rounded-xl bg-surface px-5 py-3.5"
+          >
+            <span className="text-xl">📝</span>
+            <span>
+              <span className="block text-sm font-bold text-foreground">Post Your Property</span>
+              <span className="block text-xs text-muted">List it free, verified in hours</span>
+            </span>
+          </a>
+          <a
+            href="/property-requirement"
+            className="card-lift flex items-center gap-3 rounded-xl bg-surface px-5 py-3.5"
+          >
+            <span className="text-xl">🔍</span>
+            <span>
+              <span className="block text-sm font-bold text-foreground">Tell Us What You Need</span>
+              <span className="block text-xs text-muted">Can't find it? We'll find it for you</span>
+            </span>
+          </a>
+          <a
+            href="/properties?sort=newest"
+            className="card-lift flex items-center gap-3 rounded-xl bg-surface px-5 py-3.5"
+          >
+            <span className="text-xl">🏗</span>
+            <span>
+              <span className="block text-sm font-bold text-foreground">New Launch Projects</span>
+              <span className="block text-xs text-muted">Freshly listed, first look</span>
+            </span>
+          </a>
         </div>
       </div>
 

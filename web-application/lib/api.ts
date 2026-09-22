@@ -205,3 +205,33 @@ export async function getPartner(userId: number): Promise<PartnerProfile | null>
     return null;
   }
 }
+
+/**
+ * "Tell us what you need" — public lead-capture, no login required. Posted
+ * from a client component, so this can't use Next's fetch cache the way the
+ * read helpers above do; errors surface to the caller instead of degrading
+ * to an empty result, since a failed submission needs to tell the visitor.
+ */
+export async function submitPropertyRequirement(payload: {
+  name: string;
+  phone: string;
+  email?: string;
+  city?: string;
+  property_type?: string;
+  listing_type?: 'sale' | 'rent';
+  budget_min?: number;
+  budget_max?: number;
+  message?: string;
+}): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/property-requirements`, {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const payloadJson = await readJson<null>(response, '/property-requirements');
+
+  if (!response.ok || !payloadJson?.success) {
+    throw new Error(payloadJson?.message ?? 'Could not submit your requirement. Please try again.');
+  }
+}

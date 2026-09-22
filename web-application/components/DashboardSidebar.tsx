@@ -97,7 +97,7 @@ export function DashboardSidebar({ counts }: { counts?: Record<string, number> }
           </p>
           <Link
             href="/pricing"
-            className="mt-3 block rounded-lg bg-gold py-2 text-xs font-bold text-navy transition hover:bg-gold-dark"
+            className="mt-3 block rounded-lg bg-gold py-2 text-xs font-bold text-white transition hover:bg-gold-deep"
           >
             Upgrade Now
           </Link>

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AuthNav } from './AuthNav';
+import { HeaderCitySelect } from './HeaderCitySelect';
 import { StickyHeaderShell } from './StickyHeaderShell';
 
 const NAV = [
@@ -24,6 +25,8 @@ export function Header() {
           </span>
         </Link>
 
+        <HeaderCitySelect />
+
         <nav className="hidden items-center gap-1 text-sm font-semibold text-muted md:flex">
           {NAV.map((item) => (
             <Link
@@ -36,7 +39,15 @@ export function Header() {
           ))}
         </nav>
 
-        <AuthNav />
+        <div className="flex items-center gap-2">
+          <Link
+            href="/properties/new"
+            className="hidden rounded-full bg-gold px-4 py-2 text-xs font-bold text-white shadow-[var(--shadow-gold)] transition hover:bg-gold-deep sm:block"
+          >
+            Post Property Free
+          </Link>
+          <AuthNav />
+        </div>
       </header>
     </StickyHeaderShell>
   );

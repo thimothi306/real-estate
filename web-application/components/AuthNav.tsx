@@ -25,7 +25,7 @@ export function AuthNav() {
         </Link>
         <Link
           href="/register"
-          className="rounded-full bg-gold px-4 py-2 text-sm font-bold text-navy hover:bg-gold-dark"
+          className="rounded-full bg-gold px-4 py-2 text-sm font-bold text-white hover:bg-gold-deep"
         >
           Sign up
         </Link>

@@ -52,7 +52,7 @@ export default async function HomeLoanPage() {
                     <p className="text-xs text-muted">
                       Up to {formatPrice(offer.max_amount)} · {offer.max_tenure_years} yr tenure
                     </p>
-                    {!!offer.highlight && <p className="mt-0.5 text-xs font-semibold text-gold-dark">{offer.highlight}</p>}
+                    {!!offer.highlight && <p className="mt-0.5 text-xs font-semibold text-gold-deep">{offer.highlight}</p>}
                   </div>
 
                   {offer.apply_url ? (

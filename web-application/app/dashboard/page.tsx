@@ -147,7 +147,7 @@ export default function DashboardPage() {
                 />
                 <button
                   type="submit"
-                  className="rounded-xl bg-gold px-6 py-3 text-sm font-bold text-navy transition hover:bg-gold-dark"
+                  className="rounded-xl bg-gold px-6 py-3 text-sm font-bold text-white transition hover:bg-gold-deep"
                 >
                   Search
                 </button>
