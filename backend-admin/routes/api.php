@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\LeadController;
 use App\Http\Controllers\Api\V1\LifestyleTagController;
 use App\Http\Controllers\Api\V1\LoanOfferController;
+use App\Http\Controllers\Api\V1\PropertyRequirementController;
 use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PartnerController;
@@ -100,6 +101,9 @@ Route::prefix('v1')->group(function () {
     // ---- Home loans (public: browsable before sign-in) ----
     Route::get('loan-offers', [LoanOfferController::class, 'index']);
     Route::post('loan-offers/emi', [LoanOfferController::class, 'calculateEmi']);
+
+    // ---- Buyer requirement capture ("Tell us what you need") — public lead-gen form ----
+    Route::post('property-requirements', [PropertyRequirementController::class, 'store']);
 
     Route::middleware('auth:sanctum')->group(function () {
         // Profile

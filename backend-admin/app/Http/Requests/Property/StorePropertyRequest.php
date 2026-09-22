@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Property;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -9,6 +10,17 @@ class StorePropertyRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        $user = $this->user();
+
+        // Self-service listing: posting your first property is what makes a
+        // plain buyer/tenant an owner — mirrors the same pattern used for
+        // Kavuri Connect providers (PartnerController::updateProfile).
+        // Pre-defined listing roles (landlord/builder/agent) and admin are
+        // untouched.
+        if ($user && in_array($user->role, [User::ROLE_BUYER, User::ROLE_TENANT], true)) {
+            $user->update(['role' => User::ROLE_OWNER]);
+        }
+
         return $this->user()->can('create', \App\Models\Property::class);
     }
 

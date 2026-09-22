@@ -11,11 +11,38 @@ class PropertyTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_a_buyer_cannot_create_a_property(): void
+    public function test_a_buyer_posting_their_first_property_is_promoted_to_owner(): void
     {
+        // Self-service listing: posting a property is what makes a plain
+        // buyer/tenant an owner (StorePropertyRequest::authorize) — mirrors
+        // the same self-promotion used for Kavuri Connect providers. The
+        // listing still starts as a draft and needs admin approval before
+        // it's publicly visible, so this doesn't bypass moderation.
         $buyer = User::factory()->create(['role' => User::ROLE_BUYER]);
 
         $response = $this->actingAs($buyer, 'sanctum')->postJson('/api/v1/properties', [
+            'title' => 'My First Listing',
+            'property_type' => 'apartment',
+            'listing_type' => 'sale',
+            'price' => 1000000,
+            'city' => 'Hyderabad',
+            'state' => 'Telangana',
+        ]);
+
+        $response->assertStatus(201)->assertJsonPath('data.status', 'draft');
+
+        $this->assertSame(User::ROLE_OWNER, $buyer->fresh()->role);
+        $this->assertDatabaseHas('properties', ['title' => 'My First Listing', 'owner_id' => $buyer->id]);
+    }
+
+    public function test_a_pending_partner_role_still_cannot_create_a_property(): void
+    {
+        // Only the *unassigned* base roles (buyer/tenant) get auto-promoted.
+        // A role that's already a specific kind of partner (e.g. a legal
+        // consultant) shouldn't silently become a property owner too.
+        $consultant = User::factory()->create(['role' => User::ROLE_LEGAL_CONSULTANT]);
+
+        $response = $this->actingAs($consultant, 'sanctum')->postJson('/api/v1/properties', [
             'title' => 'Should Fail',
             'property_type' => 'apartment',
             'listing_type' => 'sale',
@@ -25,6 +52,7 @@ class PropertyTest extends TestCase
         ]);
 
         $response->assertStatus(403);
+        $this->assertSame(User::ROLE_LEGAL_CONSULTANT, $consultant->fresh()->role);
     }
 
     public function test_an_owner_can_create_a_draft_property(): void
