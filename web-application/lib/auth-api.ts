@@ -115,3 +115,24 @@ export function authPatch<T>(path: string, token: string, body?: unknown) {
 export function authDelete<T>(path: string, token: string) {
   return authFetch<T>(path, { method: 'DELETE', token });
 }
+
+/**
+ * Multipart upload (document/file) — deliberately doesn't reuse authFetch,
+ * since that always sets Content-Type: application/json. Letting fetch set
+ * its own multipart boundary header is required for FormData bodies.
+ */
+export async function authPostForm<T>(path: string, token: string, formData: FormData): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'POST',
+    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+
+  const payload = (await response.json().catch(() => null)) as ApiEnvelope<T> | null;
+
+  if (!response.ok || !payload?.success) {
+    throw new ApiError(payload?.message ?? 'Upload failed. Please try again.', payload?.errors);
+  }
+
+  return payload.data;
+}

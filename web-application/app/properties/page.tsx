@@ -23,30 +23,41 @@ function one(value: string | string[] | undefined): string | undefined {
   return value === '' ? undefined : value;
 }
 
-const PROPERTY_TYPES = [
-  'apartment', 'villa', 'plot', 'farmhouse', 'resort', 'wedding_venue',
-  'hostel', 'pg', 'office_space', 'shop', 'commercial', 'warehouse',
-];
+// Split for the Rent optgroup — Residential vs. Commercial subtypes.
+// Everything else (plots/land/farmhouse/etc.) shows ungrouped, since the
+// residential/commercial split only really means something once you're
+// renting (buying a plot isn't "residential" or "commercial" the same way).
+const RESIDENTIAL_TYPES = ['apartment', 'villa', 'farmhouse', 'pg'];
+const COMMERCIAL_TYPES = ['office_space', 'co_working_space', 'shop', 'commercial', 'warehouse'];
+const OTHER_TYPES = ['plot', 'land', 'resort', 'wedding_venue', 'hostel'];
 
 export default async function PropertiesPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
 
   const maxPrice = one(params.max_price);
   const minPrice = one(params.min_price);
+  const areaMin = one(params.area_min);
+  const areaMax = one(params.area_max);
   const bedrooms = one(params.bedrooms);
   const page = one(params.page);
 
   const filters: SearchFilters = {
     q: one(params.q),
     city: one(params.city),
+    state: one(params.state),
+    country: one(params.country),
     property_type: one(params.property_type) as SearchFilters['property_type'],
     listing_type: one(params.listing_type) as SearchFilters['listing_type'],
     min_price: minPrice ? Number(minPrice) : undefined,
     max_price: maxPrice ? Number(maxPrice) : undefined,
+    area_min: areaMin ? Number(areaMin) : undefined,
+    area_max: areaMax ? Number(areaMax) : undefined,
     bedrooms: bedrooms ? Number(bedrooms) : undefined,
     sort: (one(params.sort) as SearchFilters['sort']) ?? 'newest',
     page: page ? Number(page) : 1,
   };
+
+  const isRent = filters.listing_type === 'rent';
 
   const results = await searchProperties(filters);
 
@@ -92,13 +103,45 @@ export default async function PropertiesPage({ searchParams }: SearchPageProps) 
           placeholder="City"
           className="rounded-md border border-border px-3 py-2 text-sm"
         />
+        <input
+          type="text"
+          name="state"
+          defaultValue={params.state}
+          placeholder="State"
+          className="rounded-md border border-border px-3 py-2 text-sm"
+        />
+        <input
+          type="text"
+          name="country"
+          defaultValue={params.country}
+          placeholder="Country"
+          className="rounded-md border border-border px-3 py-2 text-sm"
+        />
         <select name="property_type" defaultValue={params.property_type} className="rounded-md border border-border px-3 py-2 text-sm">
           <option value="">Any type</option>
-          {PROPERTY_TYPES.map((type) => (
-            <option key={type} value={type}>
-              {type.replace('_', ' ')}
-            </option>
-          ))}
+          {isRent ? (
+            <>
+              <optgroup label="Residential">
+                {RESIDENTIAL_TYPES.map((type) => (
+                  <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>
+                ))}
+              </optgroup>
+              <optgroup label="Commercial">
+                {COMMERCIAL_TYPES.map((type) => (
+                  <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>
+                ))}
+              </optgroup>
+              <optgroup label="Other">
+                {OTHER_TYPES.map((type) => (
+                  <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>
+                ))}
+              </optgroup>
+            </>
+          ) : (
+            [...RESIDENTIAL_TYPES, ...COMMERCIAL_TYPES, ...OTHER_TYPES].map((type) => (
+              <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>
+            ))
+          )}
         </select>
         <select name="listing_type" defaultValue={params.listing_type} className="rounded-md border border-border px-3 py-2 text-sm">
           <option value="">Buy or rent</option>
@@ -117,6 +160,20 @@ export default async function PropertiesPage({ searchParams }: SearchPageProps) 
           name="max_price"
           defaultValue={params.max_price}
           placeholder="Max price"
+          className="rounded-md border border-border px-3 py-2 text-sm"
+        />
+        <input
+          type="number"
+          name="area_min"
+          defaultValue={params.area_min}
+          placeholder="Min area (sqft)"
+          className="rounded-md border border-border px-3 py-2 text-sm"
+        />
+        <input
+          type="number"
+          name="area_max"
+          defaultValue={params.area_max}
+          placeholder="Max area (sqft)"
           className="rounded-md border border-border px-3 py-2 text-sm"
         />
         <button type="submit" className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark">

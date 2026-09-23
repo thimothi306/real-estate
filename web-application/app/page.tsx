@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { getCategoryCounts, getCities, searchProperties } from '@/lib/api';
 import { PropertyCard } from '@/components/PropertyCard';
@@ -28,7 +29,9 @@ export default async function HomePage() {
     // position:fixed, and a clipping ancestor clips the pinned element out of
     // view. Sections with horizontal motion clip themselves instead.
     <div>
-      <LandingHero verifiedCount={totalProperties} />
+      <Suspense fallback={null}>
+        <LandingHero verifiedCount={totalProperties} />
+      </Suspense>
 
       <LifestyleGrid />
 

@@ -1,6 +1,7 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { AuthNav } from './AuthNav';
-import { HeaderCitySelect } from './HeaderCitySelect';
+import { HeaderLocationSelect } from './HeaderLocationSelect';
 import { StickyHeaderShell } from './StickyHeaderShell';
 
 const NAV = [
@@ -25,7 +26,9 @@ export function Header() {
           </span>
         </Link>
 
-        <HeaderCitySelect />
+        <Suspense fallback={<div className="hidden h-7 w-24 animate-pulse rounded-full bg-border/60 md:block" />}>
+          <HeaderLocationSelect />
+        </Suspense>
 
         <nav className="hidden items-center gap-1 text-sm font-semibold text-muted md:flex">
           {NAV.map((item) => (

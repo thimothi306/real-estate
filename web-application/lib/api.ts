@@ -114,9 +114,26 @@ export async function getProperty(slug: string): Promise<PropertyDetail | null> 
   }
 }
 
-export async function getCities(q?: string): Promise<string[]> {
+export async function getCities(q?: string, state?: string): Promise<string[]> {
   try {
-    return await apiFetch<string[]>(`/locations/cities${buildQuery({ q })}`, { revalidate: 3600 });
+    return await apiFetch<string[]>(`/locations/cities${buildQuery({ q, state })}`, { revalidate: 3600 });
+  } catch {
+    return [];
+  }
+}
+
+export async function getCountries(): Promise<string[]> {
+  try {
+    return await apiFetch<string[]>('/geo/countries', { revalidate: 86400 });
+  } catch {
+    return [];
+  }
+}
+
+/** Only "India" returns real data today — other countries return []. */
+export async function getStates(country: string): Promise<string[]> {
+  try {
+    return await apiFetch<string[]>(`/geo/states${buildQuery({ country })}`, { revalidate: 86400 });
   } catch {
     return [];
   }

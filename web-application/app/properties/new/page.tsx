@@ -7,11 +7,14 @@ import { authPost, ApiError } from '@/lib/auth-api';
 import type { PropertyDetail } from '@/lib/types';
 
 const PROPERTY_TYPES = [
-  'apartment', 'villa', 'plot', 'farmhouse', 'resort', 'wedding_venue',
-  'hostel', 'pg', 'office_space', 'shop', 'commercial', 'warehouse',
+  'apartment', 'villa', 'plot', 'land', 'farmhouse', 'resort', 'wedding_venue',
+  'hostel', 'pg', 'office_space', 'co_working_space', 'shop', 'commercial', 'warehouse',
 ];
 
-const FACING_OPTIONS = ['east', 'west', 'north', 'south', 'north_east', 'north_west', 'south_east', 'south_west'];
+const FACING_OPTIONS = [
+  'east', 'west', 'north', 'south', 'north_east', 'north_west', 'south_east', 'south_west',
+  'ocean_facing', 'park_facing', 'road_facing', 'garden_facing',
+];
 const FURNISHING_OPTIONS = ['unfurnished', 'semi_furnished', 'fully_furnished'];
 
 export default function NewPropertyPage() {

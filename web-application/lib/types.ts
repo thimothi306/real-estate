@@ -34,12 +34,14 @@ export type PropertyType =
   | 'apartment'
   | 'villa'
   | 'plot'
+  | 'land'
   | 'farmhouse'
   | 'resort'
   | 'wedding_venue'
   | 'hostel'
   | 'pg'
   | 'office_space'
+  | 'co_working_space'
   | 'shop'
   | 'commercial'
   | 'warehouse';
@@ -104,10 +106,14 @@ export type PropertyDetail = PropertySummary & {
 export type SearchFilters = {
   q?: string;
   city?: string;
+  state?: string;
+  country?: string;
   property_type?: PropertyType;
   listing_type?: ListingType;
   min_price?: number;
   max_price?: number;
+  area_min?: number;
+  area_max?: number;
   bedrooms?: number;
   sort?: 'newest' | 'price_asc' | 'price_desc';
   page?: number;
@@ -165,6 +171,15 @@ export type ServiceCategory = {
   icon: string | null;
   description: string | null;
   is_property_specific: boolean;
+};
+
+export type PartnerDocument = {
+  id: number;
+  type: 'id_proof' | 'address_proof' | 'other';
+  status: 'pending' | 'approved' | 'rejected';
+  rejection_reason: string | null;
+  reviewed_at: string | null;
+  created_at: string | null;
 };
 
 export type PartnerProfile = {

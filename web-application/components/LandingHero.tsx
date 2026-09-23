@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ASSET_BASE_URL } from '@/lib/config';
 
 /**
@@ -9,13 +10,20 @@ import { ASSET_BASE_URL } from '@/lib/config';
  * alongside the visible `property_type` select, so the Plots/Commercial/PG
  * tabs submitted the key twice ("?property_type=plot&property_type=") — the
  * API rejected the resulting "plot," value and every search returned nothing.
+ *
+ * "Sell" is a search tab in name only — selling is posting, not searching —
+ * so it carries an `href` straight to the listing form instead of a
+ * listingType/propertyType pair, and renders as a plain link in the loop
+ * below rather than a filter-selecting button.
  */
 const TABS = [
-  { key: 'buy', label: 'Buy', listingType: 'sale', propertyType: '' },
-  { key: 'rent', label: 'Rent', listingType: 'rent', propertyType: '' },
-  { key: 'plots', label: 'Plots', listingType: 'sale', propertyType: 'plot' },
-  { key: 'commercial', label: 'Commercial', listingType: '', propertyType: 'commercial' },
-  { key: 'pg', label: 'PG / Co-living', listingType: 'rent', propertyType: 'pg' },
+  { key: 'buy', label: 'Buy', listingType: 'sale', propertyType: '', href: null },
+  { key: 'rent', label: 'Rent', listingType: 'rent', propertyType: '', href: null },
+  { key: 'sell', label: 'Sell', listingType: '', propertyType: '', href: '/properties/new' },
+  { key: 'plots', label: 'Plots', listingType: 'sale', propertyType: 'plot', href: null },
+  { key: 'lands', label: 'Lands', listingType: 'sale', propertyType: 'land', href: null },
+  { key: 'commercial', label: 'Commercial', listingType: '', propertyType: 'commercial', href: null },
+  { key: 'pg', label: 'PG / Co-living', listingType: 'rent', propertyType: 'pg', href: null },
 ] as const;
 
 const PROPERTY_TYPES = [
@@ -23,9 +31,11 @@ const PROPERTY_TYPES = [
   { value: 'apartment', label: 'Apartment' },
   { value: 'villa', label: 'Villa' },
   { value: 'plot', label: 'Plot' },
+  { value: 'land', label: 'Land' },
   { value: 'farmhouse', label: 'Farmhouse' },
   { value: 'pg', label: 'PG / Co-living' },
   { value: 'commercial', label: 'Commercial' },
+  { value: 'co_working_space', label: 'Co-working / Plug & Play' },
   { value: 'office_space', label: 'Office Space' },
   { value: 'shop', label: 'Shop' },
   { value: 'warehouse', label: 'Warehouse' },
@@ -56,6 +66,19 @@ const TRUST = [
 export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
   const [tabKey, setTabKey] = useState<string>(TABS[0].key);
   const [propertyType, setPropertyType] = useState<string>(TABS[0].propertyType);
+  const [keyword, setKeyword] = useState('');
+
+  // Set by the header's country/state/city selector (HeaderLocationSelect) —
+  // read here via the URL rather than any shared component state, so the
+  // two components don't need a context of their own.
+  const searchParams = useSearchParams();
+  const country = searchParams.get('country') ?? '';
+  const state = searchParams.get('state') ?? '';
+  const city = searchParams.get('city') ?? '';
+  // Typing a keyword makes this a keyword-only search — the location
+  // filters above still show in the header, but a `disabled` hidden input
+  // is simply omitted from the form submission, so the keyword box "wins."
+  const locationDisabled = keyword.trim().length > 0;
 
   const tab = TABS.find((t) => t.key === tabKey) ?? TABS[0];
 
@@ -111,6 +134,18 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
         <div className="mt-10 max-w-4xl overflow-hidden rounded-2xl bg-surface shadow-2xl ring-1 ring-border/60">
           <div className="scroll-x flex border-b border-border" role="tablist" aria-label="Search type">
             {TABS.map((item) => {
+              if (item.href) {
+                return (
+                  <a
+                    key={item.key}
+                    href={item.href}
+                    className="relative shrink-0 px-6 py-4 text-sm font-semibold text-muted transition hover:text-foreground"
+                  >
+                    {item.label}
+                  </a>
+                );
+              }
+
               const active = tab.key === item.key;
               return (
                 <button
@@ -135,13 +170,21 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                 property_type is the select below — never duplicated here. */}
             {tab.listingType && <input type="hidden" name="listing_type" value={tab.listingType} />}
 
+            {/* Location set via the header selector — omitted from the
+                submission entirely once a keyword is typed (see locationDisabled). */}
+            {country && <input type="hidden" name="country" value={country} disabled={locationDisabled} />}
+            {state && <input type="hidden" name="state" value={state} disabled={locationDisabled} />}
+            {city && <input type="hidden" name="city" value={city} disabled={locationDisabled} />}
+
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
                 <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">📍</span>
                 <input
                   type="text"
                   name="q"
-                  placeholder="Search location or project"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder="Search location or project — e.g. 2BHK for rent in Hi-tech City, Hyderabad"
                   aria-label="Search location or project"
                   className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-faint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
@@ -178,7 +221,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               </button>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-semibold text-muted">Popular Searches:</span>
                 {POPULAR.map((item) => (
@@ -193,7 +236,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               </div>
               <a
                 href="/properties/new"
-                className="shrink-0 rounded-full bg-gold px-4 py-1.5 text-xs font-bold text-white shadow-[var(--shadow-gold)] transition hover:bg-gold-deep"
+                className="shrink-0 self-start rounded-full bg-gold px-4 py-1.5 text-xs font-bold text-white shadow-[var(--shadow-gold)] transition hover:bg-gold-deep sm:ml-4 sm:self-auto"
               >
                 Post Property for Free
               </a>
