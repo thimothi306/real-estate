@@ -1,5 +1,14 @@
-import { request } from './client';
+import { request, upload } from './client';
 import type { Paginated } from './types';
+
+export type PartnerDocument = {
+  id: number;
+  type: 'id_proof' | 'address_proof' | 'other';
+  status: 'pending' | 'approved' | 'rejected';
+  rejection_reason: string | null;
+  reviewed_at: string | null;
+  created_at: string | null;
+};
 
 export type PartnerProfile = {
   id: number;
@@ -41,5 +50,18 @@ export async function updatePartnerProfile(payload: {
   category_ids?: number[];
 }) {
   const result = await request<PartnerProfile>('/my/partner-profile', { method: 'PUT', body: payload });
+  return result.data;
+}
+
+export async function getMyPartnerDocuments() {
+  const result = await request<PartnerDocument[]>('/my/partner-profile/documents');
+  return result.data ?? [];
+}
+
+export async function uploadPartnerDocument(file: { uri: string; name: string; type: string }) {
+  const result = await upload<PartnerDocument>('/my/partner-profile/documents', [
+    { name: 'file', value: file },
+    { name: 'type', value: 'id_proof' },
+  ]);
   return result.data;
 }

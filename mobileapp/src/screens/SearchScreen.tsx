@@ -233,7 +233,7 @@ export function SearchScreen({ navigation, route }: any) {
 
             <Text style={styles.groupLabel}>Property type</Text>
             <View style={styles.chipRow}>
-              {(['apartment', 'villa', 'plot', 'farmhouse', 'resort', 'wedding_venue', 'hostel', 'pg', 'commercial', 'office_space', 'shop', 'warehouse'] as const).map((option) => (
+              {(['apartment', 'villa', 'plot', 'land', 'farmhouse', 'resort', 'wedding_venue', 'hostel', 'pg', 'commercial', 'co_working_space', 'office_space', 'shop', 'warehouse'] as const).map((option) => (
                 <Pressable
                   key={option}
                   onPress={() =>
