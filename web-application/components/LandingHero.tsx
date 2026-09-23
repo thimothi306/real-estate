@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ASSET_BASE_URL } from '@/lib/config';
 
@@ -63,21 +63,41 @@ const TRUST = [
   { icon: '🎧', title: 'End to End Support', sub: '24/7 Assistance' },
 ];
 
+/**
+ * Isolated purely so useSearchParams() doesn't force the *entire* hero into
+ * a Suspense fallback during static generation. An earlier version called
+ * useSearchParams() directly in LandingHero and wrapped the whole component
+ * in <Suspense fallback={null}> at the page level — since a Suspense
+ * boundary's fallback covers everything inside it, not just the part that
+ * actually suspends, that made the *whole* hero (tabs, badge, headline,
+ * everything) render as nothing in the prerendered HTML, only appearing
+ * after client hydration. These 3 hidden inputs are the only thing that
+ * actually needs the hook, so only they sit inside the boundary now.
+ */
+function LocationHiddenFields({ disabled }: { disabled: boolean }) {
+  const searchParams = useSearchParams();
+  const country = searchParams.get('country') ?? '';
+  const state = searchParams.get('state') ?? '';
+  const city = searchParams.get('city') ?? '';
+
+  return (
+    <>
+      {country && <input type="hidden" name="country" value={country} disabled={disabled} />}
+      {state && <input type="hidden" name="state" value={state} disabled={disabled} />}
+      {city && <input type="hidden" name="city" value={city} disabled={disabled} />}
+    </>
+  );
+}
+
 export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
   const [tabKey, setTabKey] = useState<string>(TABS[0].key);
   const [propertyType, setPropertyType] = useState<string>(TABS[0].propertyType);
   const [keyword, setKeyword] = useState('');
 
-  // Set by the header's country/state/city selector (HeaderLocationSelect) —
-  // read here via the URL rather than any shared component state, so the
-  // two components don't need a context of their own.
-  const searchParams = useSearchParams();
-  const country = searchParams.get('country') ?? '';
-  const state = searchParams.get('state') ?? '';
-  const city = searchParams.get('city') ?? '';
   // Typing a keyword makes this a keyword-only search — the location
-  // filters above still show in the header, but a `disabled` hidden input
-  // is simply omitted from the form submission, so the keyword box "wins."
+  // filters set via the header's selector still show up there, but a
+  // `disabled` hidden input is simply omitted from the form submission,
+  // so the keyword box "wins."
   const locationDisabled = keyword.trim().length > 0;
 
   const tab = TABS.find((t) => t.key === tabKey) ?? TABS[0];
@@ -172,9 +192,9 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
 
             {/* Location set via the header selector — omitted from the
                 submission entirely once a keyword is typed (see locationDisabled). */}
-            {country && <input type="hidden" name="country" value={country} disabled={locationDisabled} />}
-            {state && <input type="hidden" name="state" value={state} disabled={locationDisabled} />}
-            {city && <input type="hidden" name="city" value={city} disabled={locationDisabled} />}
+            <Suspense fallback={null}>
+              <LocationHiddenFields disabled={locationDisabled} />
+            </Suspense>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
