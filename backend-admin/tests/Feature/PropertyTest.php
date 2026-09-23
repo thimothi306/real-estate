@@ -80,6 +80,56 @@ class PropertyTest extends TestCase
         $this->assertDatabaseHas('property_history', ['event_type' => 'created']);
     }
 
+    public function test_land_and_co_working_space_are_accepted_property_types(): void
+    {
+        $owner = User::factory()->create(['role' => User::ROLE_OWNER]);
+
+        foreach (['land', 'co_working_space'] as $type) {
+            $response = $this->actingAs($owner, 'sanctum')->postJson('/api/v1/properties', [
+                'title' => "Test {$type}",
+                'property_type' => $type,
+                'listing_type' => 'sale',
+                'price' => 1000000,
+                'city' => 'Hyderabad',
+                'state' => 'Telangana',
+            ]);
+
+            $response->assertStatus(201)->assertJsonPath('data.status', 'draft');
+        }
+    }
+
+    public function test_expanded_facing_options_are_accepted(): void
+    {
+        $owner = User::factory()->create(['role' => User::ROLE_OWNER]);
+
+        $response = $this->actingAs($owner, 'sanctum')->postJson('/api/v1/properties', [
+            'title' => 'Ocean View Villa',
+            'property_type' => 'villa',
+            'listing_type' => 'sale',
+            'price' => 1000000,
+            'city' => 'Chennai',
+            'state' => 'Tamil Nadu',
+            'facing' => 'ocean_facing',
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('properties', ['title' => 'Ocean View Villa', 'facing' => 'ocean_facing']);
+    }
+
+    public function test_search_filters_by_area_range_and_country(): void
+    {
+        Property::factory()->published()->create(['area_sqft' => 800, 'country' => 'India']);
+        $matching = Property::factory()->published()->create(['area_sqft' => 1500, 'country' => 'India']);
+        Property::factory()->published()->create(['area_sqft' => 3000, 'country' => 'India']);
+        Property::factory()->published()->create(['area_sqft' => 1500, 'country' => 'United States']);
+
+        $response = $this->getJson('/api/v1/properties?area_min=1000&area_max=2000&country=India');
+
+        $response->assertStatus(200);
+        $this->assertCount(1, $response->json('data'));
+        $this->assertSame($matching->id, $response->json('data.0.id'));
+    }
+
     public function test_the_full_moderation_lifecycle_draft_to_published(): void
     {
         $owner = User::factory()->create(['role' => User::ROLE_OWNER]);

@@ -52,6 +52,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('partners', [PartnerController::class, 'index'])->name('partners.index');
         Route::post('partners/{partner}/verify', [PartnerController::class, 'verify'])->name('partners.verify');
+        Route::get('partners/documents/{document}/download', [PartnerController::class, 'downloadDocument'])->name('partners.documents.download');
+        Route::post('partners/documents/{document}/review', [PartnerController::class, 'reviewDocument'])->name('partners.documents.review');
 
         // ---- Transactions ----
         Route::get('inquiries', [OperationsController::class, 'inquiries'])->name('inquiries.index');

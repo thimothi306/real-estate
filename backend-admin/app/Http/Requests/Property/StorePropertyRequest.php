@@ -30,8 +30,8 @@ class StorePropertyRequest extends FormRequest
             'title' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:5000'],
             'property_type' => ['required', Rule::in([
-                'apartment', 'villa', 'plot', 'farmhouse', 'resort', 'wedding_venue',
-                'hostel', 'pg', 'office_space', 'shop', 'commercial', 'warehouse',
+                'apartment', 'villa', 'plot', 'land', 'farmhouse', 'resort', 'wedding_venue',
+                'hostel', 'pg', 'office_space', 'co_working_space', 'shop', 'commercial', 'warehouse',
             ])],
             'listing_type' => ['required', Rule::in(['sale', 'rent'])],
             'price' => ['required', 'numeric', 'min:0', 'max:999999999999'],
@@ -42,7 +42,10 @@ class StorePropertyRequest extends FormRequest
             'bathrooms' => ['nullable', 'integer', 'min:0', 'max:50'],
             'floor_no' => ['nullable', 'integer', 'min:0', 'max:200'],
             'total_floors' => ['nullable', 'integer', 'min:0', 'max:200'],
-            'facing' => ['nullable', Rule::in(['east', 'west', 'north', 'south', 'north_east', 'north_west', 'south_east', 'south_west'])],
+            'facing' => ['nullable', Rule::in([
+                'east', 'west', 'north', 'south', 'north_east', 'north_west', 'south_east', 'south_west',
+                'ocean_facing', 'park_facing', 'road_facing', 'garden_facing',
+            ])],
             'furnishing_status' => ['nullable', Rule::in(['unfurnished', 'semi_furnished', 'fully_furnished'])],
             'has_balcony' => ['boolean'],
             'has_swimming_pool' => ['boolean'],

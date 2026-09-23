@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PartnerDocumentResource;
 use App\Http\Resources\PartnerProfileResource;
 use App\Models\PartnerProfile;
 use App\Models\ServiceCategory;
@@ -95,5 +96,42 @@ class PartnerController extends Controller
         $profile->categories()->sync($categoryIds);
 
         return $this->success(new PartnerProfileResource($profile->fresh('categories')), 'Profile saved. Awaiting verification.');
+    }
+
+    /**
+     * ID/address-proof upload for trust verification. Stored on the private
+     * 'local' disk (unlike property photos, which are public) — never
+     * exposed via a public Storage::url(); only reachable through
+     * AdminPartnerController's authenticated, admin-only download action.
+     */
+    public function uploadDocument(Request $request)
+    {
+        $user = $request->user();
+        $profile = $user->partnerProfile;
+        abort_unless($profile, 422, 'Save your provider profile before uploading documents.');
+
+        $data = $request->validate([
+            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:10240'],
+            'type' => ['nullable', 'in:id_proof,address_proof,other'],
+        ]);
+
+        $path = $data['file']->store("partner-documents/{$user->id}", 'local');
+
+        $document = $profile->documents()->create([
+            'type' => $data['type'] ?? 'id_proof',
+            'disk' => 'local',
+            'path' => $path,
+            'status' => 'pending',
+        ]);
+
+        return $this->success(new PartnerDocumentResource($document), 'Document uploaded — awaiting review.', 201);
+    }
+
+    public function myDocuments(Request $request)
+    {
+        $profile = $request->user()->partnerProfile;
+        $documents = $profile ? $profile->documents()->latest()->get() : collect();
+
+        return $this->success(PartnerDocumentResource::collection($documents));
     }
 }

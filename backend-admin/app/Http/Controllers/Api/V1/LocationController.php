@@ -16,18 +16,29 @@ class LocationController extends Controller
     {
         $data = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
+            'state' => ['nullable', 'string', 'max:100'],
         ]);
 
-        // Full city list is small and changes slowly — cache it once, then
-        // filter in PHP for the "q" prefix match instead of hitting the DB
-        // on every keystroke of an autocomplete field.
-        $cities = Cache::remember('locations.cities', now()->addHour(), function () {
-            return Property::published()
+        // A state-scoped query (for the cascading location selector) is
+        // cheap and specific enough to just hit the DB directly — only the
+        // unfiltered "all cities" list is worth caching, since that's the
+        // one every autocomplete keystroke would otherwise repeat.
+        if (! empty($data['state'])) {
+            $cities = Property::published()
+                ->where('state', $data['state'])
                 ->select('city')
                 ->distinct()
                 ->orderBy('city')
                 ->pluck('city');
-        });
+        } else {
+            $cities = Cache::remember('locations.cities', now()->addHour(), function () {
+                return Property::published()
+                    ->select('city')
+                    ->distinct()
+                    ->orderBy('city')
+                    ->pluck('city');
+            });
+        }
 
         if (! empty($data['q'])) {
             $needle = strtolower($data['q']);

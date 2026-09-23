@@ -32,7 +32,16 @@ class PropertySearchService
             ]);
 
         if (! empty($filters['q'])) {
-            $query->whereFullText(['title', 'description'], $filters['q']);
+            // Keyword box also matches city/locality (e.g. "2bhk for rent in
+            // Hi-tech city Hyderabad") — a plain FULLTEXT match on
+            // title/description alone would miss the location half of a
+            // natural-language query like that.
+            $keyword = $filters['q'];
+            $query->where(function ($sub) use ($keyword) {
+                $sub->whereFullText(['title', 'description'], $keyword)
+                    ->orWhere('city', 'like', "%{$keyword}%")
+                    ->orWhere('locality', 'like', "%{$keyword}%");
+            });
         }
 
         if (! empty($filters['city'])) {
@@ -41,6 +50,10 @@ class PropertySearchService
 
         if (! empty($filters['state'])) {
             $query->where('state', $filters['state']);
+        }
+
+        if (! empty($filters['country'])) {
+            $query->where('country', $filters['country']);
         }
 
         if (! empty($filters['property_type'])) {
@@ -57,6 +70,14 @@ class PropertySearchService
 
         if (! empty($filters['max_price'])) {
             $query->where('price', '<=', $filters['max_price']);
+        }
+
+        if (! empty($filters['area_min'])) {
+            $query->where('area_sqft', '>=', $filters['area_min']);
+        }
+
+        if (! empty($filters['area_max'])) {
+            $query->where('area_sqft', '<=', $filters['area_max']);
         }
 
         if (! empty($filters['bedrooms'])) {

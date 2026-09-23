@@ -31,6 +31,7 @@
                     <th>Role</th>
                     <th>Categories</th>
                     <th>Rating</th>
+                    <th>Documents</th>
                     <th style="width:140px">Action</th>
                 </tr>
                 </thead>
@@ -51,6 +52,36 @@
                                 {{ number_format($partner->rating_avg, 1) }} ★ ({{ $partner->rating_count }}) · {{ $partner->total_completed }} done
                             @else
                                 No reviews yet
+                            @endif
+                        </td>
+                        <td>
+                            @if($partner->documents->isEmpty())
+                                <span class="muted">None uploaded</span>
+                            @else
+                                @foreach($partner->documents as $document)
+                                    <div style="margin-bottom:6px;white-space:nowrap">
+                                        <a href="{{ route('admin.partners.documents.download', $document) }}" target="_blank">{{ ucwords(str_replace('_', ' ', $document->type)) }}</a>
+                                        @if($document->status === 'pending')
+                                            <span class="badge-status st-pending">Pending</span>
+                                            <form method="POST" action="{{ route('admin.partners.documents.review', $document) }}" style="display:inline">
+                                                @csrf
+                                                <input type="hidden" name="status" value="approved">
+                                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                            </form>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="document.getElementById('reject-{{ $document->id }}').style.display='inline'">Reject</button>
+                                            <form id="reject-{{ $document->id }}" method="POST" action="{{ route('admin.partners.documents.review', $document) }}" style="display:none">
+                                                @csrf
+                                                <input type="hidden" name="status" value="rejected">
+                                                <input type="text" name="rejection_reason" placeholder="Reason" required style="width:120px">
+                                                <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
+                                            </form>
+                                        @elseif($document->status === 'approved')
+                                            <span class="badge-status st-active">Approved</span>
+                                        @else
+                                            <span class="badge-status st-rejected" title="{{ $document->rejection_reason }}">Rejected</span>
+                                        @endif
+                                    </div>
+                                @endforeach
                             @endif
                         </td>
                         <td>

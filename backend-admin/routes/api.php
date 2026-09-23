@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\LeadController;
 use App\Http\Controllers\Api\V1\LifestyleTagController;
+use App\Http\Controllers\Api\V1\GeoController;
 use App\Http\Controllers\Api\V1\LoanOfferController;
 use App\Http\Controllers\Api\V1\PropertyRequirementController;
 use App\Http\Controllers\Api\V1\LocationController;
@@ -72,6 +73,10 @@ Route::prefix('v1')->group(function () {
     // ---- Locations (public, cached) ----
     Route::get('locations/cities', [LocationController::class, 'cities']);
     Route::get('locations/localities', [LocationController::class, 'localities']);
+
+    // ---- Geo (public, static data) — country/state cascading selector ----
+    Route::get('geo/countries', [GeoController::class, 'countries']);
+    Route::get('geo/states', [GeoController::class, 'states']);
 
     // ---- Community reviews (public read) ----
     Route::get('reviews', [ReviewController::class, 'index']);
@@ -187,6 +192,8 @@ Route::prefix('v1')->group(function () {
         // Partner profile
         Route::get('my/partner-profile', [PartnerController::class, 'myProfile']);
         Route::put('my/partner-profile', [PartnerController::class, 'updateProfile']);
+        Route::post('my/partner-profile/documents', [PartnerController::class, 'uploadDocument']);
+        Route::get('my/partner-profile/documents', [PartnerController::class, 'myDocuments']);
 
         // Payments
         Route::post('properties/{property}/feature', [PaymentController::class, 'purchaseFeaturedListing']);
@@ -214,5 +221,8 @@ Route::prefix('v1')->group(function () {
 
         Route::get('partners/pending', [AdminPartnerController::class, 'pending']);
         Route::post('partners/{partnerProfile}/verify', [AdminPartnerController::class, 'verify']);
+        Route::get('partners/{partnerProfile}/documents', [AdminPartnerController::class, 'documents']);
+        Route::get('partners/documents/{document}/download', [AdminPartnerController::class, 'downloadDocument']);
+        Route::post('partners/documents/{document}/review', [AdminPartnerController::class, 'reviewDocument']);
     });
 });

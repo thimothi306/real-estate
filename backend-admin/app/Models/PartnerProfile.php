@@ -35,4 +35,9 @@ class PartnerProfile extends Model
     {
         return $this->belongsToMany(ServiceCategory::class, 'partner_profile_service_category');
     }
+
+    public function documents()
+    {
+        return $this->hasMany(PartnerDocument::class);
+    }
 }
