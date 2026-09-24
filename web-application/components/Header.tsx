@@ -42,10 +42,10 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/properties/new"
-            className="hidden rounded-full bg-gold px-4 py-2 text-xs font-bold text-white shadow-[var(--shadow-gold)] transition hover:bg-gold-deep sm:block"
+            className="hidden shrink-0 whitespace-nowrap rounded-full bg-gold px-4 py-2 text-xs font-bold text-white shadow-[var(--shadow-gold)] transition hover:bg-gold-deep sm:block"
           >
             Post Property Free
           </Link>

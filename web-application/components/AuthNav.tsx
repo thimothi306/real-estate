@@ -16,16 +16,16 @@ export function AuthNav() {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <Link
           href="/login"
-          className="rounded-full px-4 py-2 text-sm font-semibold text-foreground hover:bg-background"
+          className="shrink-0 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold text-foreground hover:bg-background"
         >
           Log in
         </Link>
         <Link
           href="/register"
-          className="rounded-full bg-gold px-4 py-2 text-sm font-bold text-white hover:bg-gold-deep"
+          className="shrink-0 whitespace-nowrap rounded-full bg-gold px-4 py-2 text-sm font-bold text-white hover:bg-gold-deep"
         >
           Sign up
         </Link>
