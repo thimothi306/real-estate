@@ -89,9 +89,10 @@ export function HeaderLocationSelect() {
         value={city}
         onChange={(e) => navigate({ city: e.target.value })}
         aria-label="City"
-        className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-primary hover:text-foreground focus:border-primary focus:outline-none"
+        disabled={!state || cities.length === 0}
+        className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-primary hover:text-foreground focus:border-primary focus:outline-none disabled:opacity-50"
       >
-        <option value="">📍 City</option>
+        <option value="">{(!state || cities.length === 0) ? '📍 City' : 'Select City'}</option>
         {cities.map((c) => (
           <option key={c} value={c}>{c}</option>
         ))}

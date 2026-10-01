@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     // throws off Lenis's scrollHeight measurements. min-h-screen on <body>
     // keeps the footer pinned to the bottom without capping the page.
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <body className="flex min-h-screen flex-col bg-background">
+      <body className="flex min-h-screen flex-col bg-background overflow-x-hidden">
         <SmoothScrollProvider>
           <AuthProvider>
             <Header />
