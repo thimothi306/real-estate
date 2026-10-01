@@ -360,14 +360,10 @@
             ['route' => 'admin.banners.index', 'icon' => '🖼', 'label' => 'Banners'],
         ]],
         ['label' => 'Reports', 'items' => [
-        ['label' => 'System', 'items' => [
-            ['route' => 'admin.locations.index', 'icon' => '🌍', 'label' => 'Location Management'],
-            ['route' => 'admin.logs.index', 'icon' => '📜', 'label' => 'System Logs'],
-        ]],
-
             ['route' => 'admin.analytics.index', 'icon' => '📊', 'label' => 'Analytics'],
         ]],
         ['label' => 'System', 'items' => [
+            ['route' => 'admin.locations.index', 'icon' => '🌍', 'label' => 'Location Management'],
             ['route' => 'admin.logs.index', 'icon' => '🕘', 'label' => 'System Logs'],
         ]],
     ];
