@@ -18,13 +18,57 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "detox": "^20.51.4",
+    "detox-cli": "^20.51.4",
+    "jest": "^30.5.1",
     "typescript": "~6.0.3"
   },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test:e2e": "detox test --configuration ios.sim.debug --cleanup",
+    "test:e2e:android": "detox test --configuration android.emu.debug --cleanup",
+    "test:e2e:build": "detox build-framework-cache && detox build-app --configuration ios.sim.debug",
+    "test:e2e:build:android": "detox build-app --configuration android.emu.debug",
+    "test:e2e:debug": "detox test --configuration ios.sim.debug --record-logs all",
+    "test:e2e:report": "detox test-results --record-logs all"
+  },
+  "detox": {
+    "configurations": {
+      "ios.sim.debug": {
+        "device": {
+          "type": "iOS",
+          "device": {
+            "type": "iPhone 15"
+          }
+        },
+        "app": "ios.debug"
+      },
+      "android.emu.debug": {
+        "device": {
+          "type": "android",
+          "device": {
+            "avdName": "Pixel_5_API_34"
+          }
+        },
+        "app": "android.debug"
+      }
+    },
+    "apps": {
+      "ios.debug": {
+        "type": "ios.app",
+        "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/mobileapp.app",
+        "build": "xcodebuild -workspace ios/mobileapp.xcworkspace -scheme mobileapp -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -UseModernBuildSystem=YES"
+      },
+      "android.debug": {
+        "type": "android.apk",
+        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+        "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug"
+      }
+    },
+    "testRunner": "jest"
   },
   "private": true
 }

@@ -205,6 +205,22 @@ Route::prefix('v1')->group(function () {
 
     // ---- Admin (role-gated) ----
     Route::prefix('admin')->group(function () {
+        // Location Management
+        Route::get('locations/countries', [\App\Http\Controllers\Admin\LocationController::class, 'getCountries']);
+        Route::post('locations/countries', [\App\Http\Controllers\Admin\LocationController::class, 'storeCountry']);
+        Route::put('locations/countries/{id}', [\App\Http\Controllers\Admin\LocationController::class, 'updateCountry']);
+        Route::delete('locations/countries/{id}', [\App\Http\Controllers\Admin\LocationController::class, 'destroyCountry']);
+
+        Route::get('locations/countries/{countryId}/states', [\App\Http\Controllers\Admin\LocationController::class, 'getStates']);
+        Route::post('locations/states', [\App\Http\Controllers\Admin\LocationController::class, 'storeState']);
+        Route::put('locations/states/{id}', [\App\Http\Controllers\Admin\LocationController::class, 'updateState']);
+        Route::delete('locations/states/{id}', [\App\Http\Controllers\Admin\LocationController::class, 'destroyState']);
+
+        Route::get('locations/states/{stateId}/cities', [\App\Http\Controllers\Admin\LocationController::class, 'getCities']);
+        Route::post('locations/cities', [\App\Http\Controllers\Admin\LocationController::class, 'storeCity']);
+        Route::put('locations/cities/{id}', [\App\Http\Controllers\Admin\LocationController::class, 'updateCity']);
+        Route::delete('locations/cities/{id}', [\App\Http\Controllers\Admin\LocationController::class, 'destroyCity']);
+
         Route::get('properties/pending', [AdminPropertyController::class, 'pending']);
         Route::post('properties/{property}/approve', [AdminPropertyController::class, 'approve']);
         Route::post('properties/{property}/reject', [AdminPropertyController::class, 'reject']);
