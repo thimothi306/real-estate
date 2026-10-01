@@ -11,9 +11,10 @@ use Illuminate\Http\JsonResponse;
 
 class LocationController extends Controller
 {
-    /**
-     * Handle Country Management
-     */
+    public function index()
+    {
+        return view('admin.locations.index');
+    }
     public function getCountries(): JsonResponse
     {
         return response()->json(Country::with('states')->get());
