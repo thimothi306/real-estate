@@ -134,6 +134,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
   }
 
   const subTypeCategory = asSubTypeCategory(propertyType);
+  const isCategoryTab = tabKey === 'plots' || tabKey === 'lands' || tabKey === 'commercial' || tabKey === 'pg';
   const isPlot = propertyType === 'plot' || propertyType === 'land';
   const isPg = propertyType === 'pg';
   const budgets = isPlot ? PLOT_BUDGETS : isPg ? PG_BUDGETS : GENERAL_BUDGETS;
@@ -251,20 +252,27 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                 <option value="rent">For rent / lease</option>
               </select>
 
-              <select
-                name="property_type"
-                aria-label="Property type"
-                value={propertyType}
-                onChange={(e) => {
-                  setPropertyType(e.target.value);
-                  setSubType('');
-                }}
-                className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                {PROPERTY_TYPES.map((type) => (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-                ))}
-              </select>
+              {/* Plots/Lands/Commercial/PG tabs already fix the category — the
+                  full type list (Apartment, Shop, Warehouse…) would just be
+                  noise, so only the sub-type dropdown below shows for them. */}
+              {isCategoryTab ? (
+                <input type="hidden" name="property_type" value={propertyType} />
+              ) : (
+                <select
+                  name="property_type"
+                  aria-label="Property type"
+                  value={propertyType}
+                  onChange={(e) => {
+                    setPropertyType(e.target.value);
+                    setSubType('');
+                  }}
+                  className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                >
+                  {PROPERTY_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+              )}
 
               <select
                 name="max_price"
