@@ -27,6 +27,7 @@ class PropertyDetailResource extends JsonResource
             'total_floors' => $this->total_floors,
             'facing' => $this->facing,
             'furnishing_status' => $this->furnishing_status,
+            'category_details' => $this->category_details,
             'has_balcony' => $this->has_balcony,
             'has_swimming_pool' => $this->has_swimming_pool,
             'has_garden' => $this->has_garden,

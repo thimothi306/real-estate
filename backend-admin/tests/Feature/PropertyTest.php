@@ -195,6 +195,68 @@ class PropertyTest extends TestCase
         $this->assertCount(1, $response->json('data'));
     }
 
+    public function test_category_details_can_be_saved_and_used_by_search_filters(): void
+    {
+        $owner = User::factory()->create(['role' => User::ROLE_OWNER]);
+        $details = [
+            'plot_purpose' => 'residential',
+            'plot_approval' => 'hmda',
+            'plot_features' => ['gated_community', 'corner'],
+        ];
+
+        $created = $this->actingAs($owner, 'sanctum')->postJson('/api/v1/properties', [
+            'title' => 'HMDA Gated Plot',
+            'property_type' => 'plot',
+            'listing_type' => 'sale',
+            'price' => 4500000,
+            'city' => 'Hyderabad',
+            'state' => 'Telangana',
+            'category_details' => $details,
+        ]);
+
+        $created->assertStatus(201)->assertJsonPath('data.category_details.plot_approval', 'hmda');
+
+        $matching = Property::factory()->published()->create([
+            'property_type' => 'plot',
+            'category_details' => $details,
+        ]);
+        Property::factory()->published()->create([
+            'property_type' => 'plot',
+            'category_details' => ['plot_purpose' => 'agricultural', 'plot_approval' => 'dtcp'],
+        ]);
+
+        $this->getJson('/api/v1/properties?property_type=plot&plot_approval=hmda&plot_feature=gated_community')
+            ->assertOk()
+            ->assertJsonFragment(['id' => $matching->id]);
+
+        $pgDetails = [
+            'pg_occupancy' => 'double',
+            'pg_tenant_type' => 'professionals',
+            'pg_amenities' => ['wifi', 'ac'],
+            'food_included' => true,
+        ];
+        $this->actingAs($owner, 'sanctum')->postJson('/api/v1/properties', [
+            'title' => 'Co-living for Professionals',
+            'property_type' => 'pg',
+            'listing_type' => 'rent',
+            'price' => 10000,
+            'city' => 'Hyderabad',
+            'state' => 'Telangana',
+            'category_details' => $pgDetails,
+        ])->assertStatus(201)->assertJsonPath('data.category_details.food_included', true);
+
+        $matchingPg = Property::factory()->published()->create([
+            'property_type' => 'pg',
+            'listing_type' => 'rent',
+            'price' => 30000,
+            'rent_price' => 12000,
+            'category_details' => $pgDetails,
+        ]);
+        $this->getJson('/api/v1/properties?property_type=pg&listing_type=rent&max_price=15000&pg_occupancy=double&food_included=true&pg_amenities[]=wifi&pg_amenities[]=ac')
+            ->assertOk()
+            ->assertJsonFragment(['id' => $matchingPg->id]);
+    }
+
     public function test_a_property_owner_can_delete_their_own_draft(): void
     {
         $owner = User::factory()->create(['role' => User::ROLE_OWNER]);

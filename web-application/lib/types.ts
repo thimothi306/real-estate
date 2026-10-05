@@ -79,6 +79,7 @@ export type PropertyDetail = PropertySummary & {
   description: string | null;
   status: string;
   plot_size_sqft: number | null;
+  category_details?: Record<string, unknown> | null;
   floor_no: number | null;
   total_floors: number | null;
   facing: string | null;
@@ -115,6 +116,18 @@ export type SearchFilters = {
   area_min?: number;
   area_max?: number;
   bedrooms?: number;
+  facing?: string;
+  plot_purpose?: string;
+  plot_approval?: string;
+  plot_transaction?: string;
+  plot_feature?: string;
+  pg_occupancy?: string;
+  pg_tenant_type?: string;
+  pg_accommodation_type?: string;
+  pg_tier?: string;
+  pg_rent_model?: string;
+  food_included?: boolean;
+  pg_amenities?: string[];
   sort?: 'newest' | 'price_asc' | 'price_desc';
   page?: number;
   per_page?: number;

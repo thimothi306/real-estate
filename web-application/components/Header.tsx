@@ -8,6 +8,7 @@ const NAV = [
   { href: '/properties?listing_type=sale', label: 'Buy' },
   { href: '/properties?listing_type=rent', label: 'Rent' },
   { href: '/properties?property_type=plot', label: 'Plots' },
+  { href: '/properties?property_type=pg&listing_type=rent', label: 'PG / Co-Living', icon: '🛏' },
   { href: '/properties?property_type=commercial', label: 'Commercial' },
   { href: '/services', label: 'Kavuri Connect' },
 ];
@@ -37,6 +38,7 @@ export function Header() {
               href={item.href}
               className="rounded-full px-3.5 py-1.5 transition hover:bg-primary-soft hover:text-primary"
             >
+              {'icon' in item && <span aria-hidden="true" className="mr-1.5">{item.icon}</span>}
               {item.label}
             </Link>
           ))}

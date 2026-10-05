@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ASSET_BASE_URL } from '@/lib/config';
 
@@ -41,12 +42,28 @@ const PROPERTY_TYPES = [
   { value: 'warehouse', label: 'Warehouse' },
 ];
 
-const BUDGETS = [
+const GENERAL_BUDGETS = [
   { value: '', label: 'Any budget' },
   { value: '5000000', label: 'Under ₹50 L' },
   { value: '10000000', label: 'Under ₹1 Cr' },
   { value: '20000000', label: 'Under ₹2 Cr' },
   { value: '50000000', label: 'Under ₹5 Cr' },
+];
+
+const PLOT_BUDGETS = [
+  { value: '', label: 'Any budget' },
+  { value: '0:2000000', label: 'Below ₹20 L' },
+  { value: '2000000:5000000', label: '₹20 L–₹50 L' },
+  { value: '5000000:10000000', label: '₹50 L–₹1 Cr' },
+  { value: '10000000:', label: 'Above ₹1 Cr' },
+];
+
+const PG_BUDGETS = [
+  { value: '', label: 'Any monthly budget' },
+  { value: '0:5000', label: 'Below ₹5,000' },
+  { value: '5000:10000', label: '₹5,000–₹10,000' },
+  { value: '10000:15000', label: '₹10,000–₹15,000' },
+  { value: '15000:', label: 'Above ₹15,000' },
 ];
 
 const POPULAR = [
@@ -92,6 +109,9 @@ function LocationHiddenFields({ disabled }: { disabled: boolean }) {
 export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
   const [tabKey, setTabKey] = useState<string>(TABS[0].key);
   const [propertyType, setPropertyType] = useState<string>(TABS[0].propertyType);
+  const [listingType, setListingType] = useState<string>(TABS[0].listingType);
+  const [budgetRange, setBudgetRange] = useState('');
+  const [selectedPgAmenities, setSelectedPgAmenities] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
 
   // Typing a keyword makes this a keyword-only search — the location
@@ -107,7 +127,15 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
     // Tab and dropdown are the same filter, so switching tabs re-seeds the
     // dropdown. The visitor can still override it afterwards.
     setPropertyType(next.propertyType);
+    setListingType(next.listingType);
+    setBudgetRange('');
+    setSelectedPgAmenities([]);
   }
+
+  const isPlot = propertyType === 'plot' || propertyType === 'land';
+  const isPg = propertyType === 'pg' || propertyType === 'hostel';
+  const budgets = isPlot ? PLOT_BUDGETS : isPg ? PG_BUDGETS : GENERAL_BUDGETS;
+  const [budgetMin, budgetMax] = budgetRange.split(':');
 
   return (
     <section className="relative overflow-hidden bg-navy">
@@ -156,13 +184,13 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
             {TABS.map((item) => {
               if (item.href) {
                 return (
-                  <a
+                  <Link
                     key={item.key}
                     href={item.href}
                     className="relative shrink-0 px-6 py-4 text-sm font-semibold text-muted transition hover:text-foreground"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 );
               }
 
@@ -186,9 +214,9 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
           </div>
 
           <form action="/properties" method="get" className="p-4">
-            {/* listing_type has no visible control, so it stays hidden.
-                property_type is the select below — never duplicated here. */}
-            {tab.listingType && <input type="hidden" name="listing_type" value={tab.listingType} />}
+            {/* property_type and listing_type each have one visible control below. */}
+            {budgetMin && <input type="hidden" name="min_price" value={budgetMin} />}
+            {budgetMax && <input type="hidden" name="max_price" value={budgetMax} />}
 
             {/* Location set via the header selector — omitted from the
                 submission entirely once a keyword is typed (see locationDisabled). */}
@@ -211,6 +239,17 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               </div>
 
               <select
+                name="listing_type"
+                aria-label="I want to"
+                value={listingType}
+                onChange={(e) => setListingType(e.target.value)}
+                className="rounded-xl border border-border bg-surface px-4 py-3 text-sm capitalize text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              >
+                <option value="sale">For sale</option>
+                <option value="rent">For rent / lease</option>
+              </select>
+
+              <select
                 name="property_type"
                 aria-label="Property type"
                 value={propertyType}
@@ -225,10 +264,11 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               <select
                 name="max_price"
                 aria-label="Budget"
-                defaultValue=""
+                value={budgetRange}
+                onChange={(e) => setBudgetRange(e.target.value)}
                 className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
-                {BUDGETS.map((budget) => (
+                {budgets.map((budget) => (
                   <option key={budget.value} value={budget.value}>{budget.label}</option>
                 ))}
               </select>
@@ -240,6 +280,112 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                 🔍 Search
               </button>
             </div>
+
+            {isPlot && (
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <select name="plot_purpose" aria-label="Plot purpose" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any purpose</option>
+                  <option value="residential">Residential</option>
+                  <option value="commercial">Commercial</option>
+                  <option value="industrial">Industrial</option>
+                  <option value="agricultural">Agricultural</option>
+                  <option value="farmhouse">Farmhouse</option>
+                  <option value="venture_layout">Venture / layout</option>
+                </select>
+                <select name="plot_approval" aria-label="Plot approval" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any approval</option>
+                  <option value="hmda">HMDA approved</option>
+                  <option value="dtcp">DTCP approved</option>
+                  <option value="municipal">Municipal approved</option>
+                  <option value="gram_panchayat">Gram Panchayat</option>
+                  <option value="non_approved">Non-approved</option>
+                </select>
+                <select name="plot_transaction" aria-label="Plot transaction" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any transaction</option>
+                  <option value="direct_sale">Direct owner sale</option>
+                  <option value="joint_development">Joint development</option>
+                  <option value="investment_prelaunch">Investment / pre-launch</option>
+                </select>
+                <select name="plot_feature" aria-label="Plot location feature" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any plot location</option>
+                  <option value="gated_community">Gated community</option>
+                  <option value="corner">Corner plot</option>
+                  <option value="highway_facing">Highway facing</option>
+                  <option value="villa_plot">Villa plot</option>
+                  <option value="land_parcel">Land parcel (1+ acre)</option>
+                </select>
+                <select name="facing" aria-label="Plot facing" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any facing</option>
+                  <option value="east">East facing</option>
+                  <option value="west">West facing</option>
+                  <option value="north">North facing</option>
+                  <option value="south">South facing</option>
+                </select>
+              </div>
+            )}
+
+            {isPg && (
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <select name="pg_tenant_type" aria-label="Tenant type" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Anyone</option>
+                  <option value="gents">Boys / gents</option>
+                  <option value="ladies">Girls / ladies</option>
+                  <option value="students">Students</option>
+                  <option value="professionals">Working professionals</option>
+                  <option value="unisex">Co-living / unisex</option>
+                  <option value="couples">Couple friendly</option>
+                </select>
+                <select name="pg_occupancy" aria-label="Occupancy" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any occupancy</option>
+                  <option value="single">Single</option>
+                  <option value="double">Double sharing</option>
+                  <option value="triple">Triple sharing</option>
+                  <option value="four_plus">4+ sharing</option>
+                </select>
+                <select name="pg_accommodation_type" aria-label="PG accommodation type" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any accommodation</option>
+                  <option value="pg_rooms">PG rooms</option>
+                  <option value="coliving_apartment">Co-living apartment</option>
+                  <option value="hostel">Hostel</option>
+                  <option value="private_room">Private room</option>
+                  <option value="studio_apartment">Studio apartment</option>
+                </select>
+                <select name="pg_tier" aria-label="PG tier" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any standard</option>
+                  <option value="standard">Standard</option>
+                  <option value="premium_luxury">Premium / luxury co-living</option>
+                </select>
+                <select name="pg_rent_model" aria-label="Rent duration" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Any duration</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="daily_weekly">Daily / weekly</option>
+                  <option value="long_term_lease">Long-term lease (6+ months)</option>
+                </select>
+                <select name="food_included" aria-label="Food included" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                  <option value="">Food: any</option>
+                  <option value="true">Food included</option>
+                  <option value="false">Food not included</option>
+                </select>
+                <fieldset className="col-span-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted sm:col-span-4">
+                  <legend className="sr-only">PG amenities</legend>
+                  {[
+                    ['ac', 'AC'], ['attached_washroom', 'Attached washroom'], ['washing_machine', 'Washing machine'],
+                    ['wifi', 'Wi-Fi'], ['food', 'Food'], ['housekeeping', 'Housekeeping'], ['gaming_zone', 'Gaming zone'],
+                  ].map(([value, label]) => (
+                    <label key={value} className="flex items-center gap-1.5">
+                      <input
+                        type="checkbox"
+                        name="pg_amenities"
+                        value={value}
+                        checked={selectedPgAmenities.includes(value)}
+                        onChange={() => setSelectedPgAmenities((current) => current.includes(value) ? current.filter((item) => item !== value) : [...current, value])}
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </fieldset>
+              </div>
+            )}
 
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-center gap-2">
@@ -254,12 +400,12 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                   </a>
                 ))}
               </div>
-              <a
+              <Link
                 href="/properties/new"
                 className="shrink-0 self-start rounded-full bg-gold px-4 py-1.5 text-xs font-bold text-white shadow-[var(--shadow-gold)] transition hover:bg-gold-deep sm:ml-4 sm:self-auto"
               >
                 Post Property for Free
-              </a>
+              </Link>
             </div>
           </form>
         </div>
@@ -269,7 +415,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <a
+          <Link
             href="/properties/new"
             className="card-lift flex items-center gap-3 rounded-xl bg-surface px-5 py-3.5"
           >
@@ -278,18 +424,18 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               <span className="block text-sm font-bold text-foreground">Post Your Property</span>
               <span className="block text-xs text-muted">List it free, verified in hours</span>
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href="/property-requirement"
             className="card-lift flex items-center gap-3 rounded-xl bg-surface px-5 py-3.5"
           >
             <span className="text-xl">🔍</span>
             <span>
               <span className="block text-sm font-bold text-foreground">Tell Us What You Need</span>
-              <span className="block text-xs text-muted">Can't find it? We'll find it for you</span>
+              <span className="block text-xs text-muted">Can&apos;t find it? We&apos;ll find it for you</span>
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href="/properties?sort=newest"
             className="card-lift flex items-center gap-3 rounded-xl bg-surface px-5 py-3.5"
           >
@@ -298,7 +444,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               <span className="block text-sm font-bold text-foreground">New Launch Projects</span>
               <span className="block text-xs text-muted">Freshly listed, first look</span>
             </span>
-          </a>
+          </Link>
         </div>
       </div>
 

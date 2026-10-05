@@ -64,12 +64,16 @@ class PropertySearchService
             $query->where('listing_type', $filters['listing_type']);
         }
 
+        $priceExpression = ($filters['listing_type'] ?? null) === 'rent'
+            ? 'COALESCE(rent_price, price)'
+            : 'price';
+
         if (! empty($filters['min_price'])) {
-            $query->where('price', '>=', $filters['min_price']);
+            $query->whereRaw($priceExpression.' >= ?', [$filters['min_price']]);
         }
 
         if (! empty($filters['max_price'])) {
-            $query->where('price', '<=', $filters['max_price']);
+            $query->whereRaw($priceExpression.' <= ?', [$filters['max_price']]);
         }
 
         if (! empty($filters['area_min'])) {
@@ -86,6 +90,37 @@ class PropertySearchService
 
         if (! empty($filters['furnishing_status'])) {
             $query->where('furnishing_status', $filters['furnishing_status']);
+        }
+
+        foreach ([
+            'plot_purpose', 'plot_approval', 'plot_transaction',
+            'pg_occupancy', 'pg_tenant_type', 'pg_accommodation_type', 'pg_rent_model',
+            'pg_tier',
+        ] as $categoryFilter) {
+            if (! empty($filters[$categoryFilter])) {
+                $query->where('category_details->'.$categoryFilter, $filters[$categoryFilter]);
+            }
+        }
+
+        if (! empty($filters['plot_feature'])) {
+            $query->whereJsonContains('category_details->plot_features', $filters['plot_feature']);
+            if ($filters['plot_feature'] === 'land_parcel') {
+                $query->where('plot_size_sqft', '>=', 43560);
+            }
+        }
+
+        foreach ($filters['pg_amenities'] ?? [] as $amenity) {
+            $query->whereJsonContains('category_details->pg_amenities', $amenity);
+        }
+
+        if (array_key_exists('food_included', $filters) && $filters['food_included'] !== null && $filters['food_included'] !== '') {
+            $query->whereJsonContains('category_details', [
+                'food_included' => filter_var($filters['food_included'], FILTER_VALIDATE_BOOLEAN),
+            ]);
+        }
+
+        if (! empty($filters['facing'])) {
+            $query->where('facing', $filters['facing']);
         }
 
         if (! empty($filters['rera_only'])) {
