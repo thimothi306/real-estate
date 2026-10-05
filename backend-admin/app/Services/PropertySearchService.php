@@ -92,31 +92,8 @@ class PropertySearchService
             $query->where('furnishing_status', $filters['furnishing_status']);
         }
 
-        foreach ([
-            'plot_purpose', 'plot_approval', 'plot_transaction',
-            'pg_occupancy', 'pg_tenant_type', 'pg_accommodation_type', 'pg_rent_model',
-            'pg_tier',
-        ] as $categoryFilter) {
-            if (! empty($filters[$categoryFilter])) {
-                $query->where('category_details->'.$categoryFilter, $filters[$categoryFilter]);
-            }
-        }
-
-        if (! empty($filters['plot_feature'])) {
-            $query->whereJsonContains('category_details->plot_features', $filters['plot_feature']);
-            if ($filters['plot_feature'] === 'land_parcel') {
-                $query->where('plot_size_sqft', '>=', 43560);
-            }
-        }
-
-        foreach ($filters['pg_amenities'] ?? [] as $amenity) {
-            $query->whereJsonContains('category_details->pg_amenities', $amenity);
-        }
-
-        if (array_key_exists('food_included', $filters) && $filters['food_included'] !== null && $filters['food_included'] !== '') {
-            $query->whereJsonContains('category_details', [
-                'food_included' => filter_var($filters['food_included'], FILTER_VALIDATE_BOOLEAN),
-            ]);
+        if (! empty($filters['sub_type'])) {
+            $query->where('category_details->sub_type', $filters['sub_type']);
         }
 
         if (! empty($filters['facing'])) {

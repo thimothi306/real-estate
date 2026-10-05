@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { searchProperties } from '@/lib/api';
 import { PropertyCard } from '@/components/PropertyCard';
 import type { SearchFilters } from '@/lib/types';
+import { asSubTypeCategory, SUB_TYPE_OPTIONS, subTypeFieldLabel } from '@/lib/propertyTaxonomy';
 
 export const metadata: Metadata = {
   title: 'Browse Properties',
@@ -40,10 +41,6 @@ export default async function PropertiesPage({ searchParams }: SearchPageProps) 
   const areaMax = one(params.area_max);
   const bedrooms = one(params.bedrooms);
   const page = one(params.page);
-  const foodIncluded = one(params.food_included);
-  const pgAmenities = Array.isArray(params.pg_amenities)
-    ? params.pg_amenities.filter(Boolean)
-    : params.pg_amenities ? [params.pg_amenities] : [];
 
   const filters: SearchFilters = {
     q: one(params.q),
@@ -58,17 +55,7 @@ export default async function PropertiesPage({ searchParams }: SearchPageProps) 
     area_max: areaMax ? Number(areaMax) : undefined,
     bedrooms: bedrooms ? Number(bedrooms) : undefined,
     facing: one(params.facing),
-    plot_purpose: one(params.plot_purpose),
-    plot_approval: one(params.plot_approval),
-    plot_transaction: one(params.plot_transaction),
-    plot_feature: one(params.plot_feature),
-    pg_occupancy: one(params.pg_occupancy),
-    pg_tenant_type: one(params.pg_tenant_type),
-    pg_accommodation_type: one(params.pg_accommodation_type),
-    pg_tier: one(params.pg_tier),
-    pg_rent_model: one(params.pg_rent_model),
-    food_included: foodIncluded === undefined ? undefined : foodIncluded === 'true',
-    pg_amenities: pgAmenities,
+    sub_type: one(params.sub_type),
     sort: (one(params.sort) as SearchFilters['sort']) ?? 'newest',
     page: page ? Number(page) : 1,
   };
@@ -83,10 +70,6 @@ export default async function PropertiesPage({ searchParams }: SearchPageProps) 
     // Normalise incoming params through one() so a repeated key never gets
     // stringified as "plot," and carried into sort/pagination links.
     for (const [key, raw] of Object.entries(params)) {
-      if (key === 'pg_amenities') {
-        for (const amenity of pgAmenities) search.append('pg_amenities', amenity);
-        continue;
-      }
       const value = one(raw);
       if (value !== undefined) search.set(key, value);
     }
@@ -168,79 +151,33 @@ export default async function PropertiesPage({ searchParams }: SearchPageProps) 
           <option value="sale">For sale</option>
           <option value="rent">For rent</option>
         </select>
-        {(filters.property_type === 'plot' || filters.property_type === 'land') && (
-          <>
-            <select name="plot_purpose" defaultValue={one(params.plot_purpose)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any plot purpose</option>
-              <option value="residential">Residential</option><option value="commercial">Commercial</option>
-              <option value="industrial">Industrial</option><option value="agricultural">Agricultural</option>
-              <option value="farmhouse">Farmhouse</option><option value="venture_layout">Venture / layout</option>
-            </select>
-            <select name="plot_approval" defaultValue={one(params.plot_approval)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any approval</option>
-              <option value="hmda">HMDA approved</option><option value="dtcp">DTCP approved</option>
-              <option value="municipal">Municipal approved</option><option value="gram_panchayat">Gram Panchayat</option>
-              <option value="non_approved">Non-approved</option>
-            </select>
-            <select name="plot_transaction" defaultValue={one(params.plot_transaction)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any transaction</option><option value="direct_sale">Direct owner sale</option><option value="joint_development">Joint development</option>
-              <option value="investment_prelaunch">Investment / pre-launch</option>
-            </select>
-            <select name="plot_feature" defaultValue={one(params.plot_feature)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any plot location</option><option value="gated_community">Gated community</option>
-              <option value="corner">Corner plot</option><option value="highway_facing">Highway facing</option>
-              <option value="villa_plot">Villa plot</option><option value="land_parcel">Land parcel (1+ acre)</option>
-            </select>
-            <select name="facing" defaultValue={one(params.facing)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any facing</option><option value="east">East</option><option value="west">West</option>
-              <option value="north">North</option><option value="south">South</option>
-            </select>
-          </>
-        )}
-        {(filters.property_type === 'pg' || filters.property_type === 'hostel') && (
-          <>
-            <select name="pg_tenant_type" defaultValue={one(params.pg_tenant_type)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any tenant type</option><option value="gents">Boys / gents</option><option value="ladies">Girls / ladies</option>
-              <option value="students">Students</option><option value="professionals">Working professionals</option>
-              <option value="unisex">Co-living / unisex</option><option value="couples">Couple friendly</option>
-            </select>
-            <select name="pg_occupancy" defaultValue={one(params.pg_occupancy)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any occupancy</option><option value="single">Single</option><option value="double">Double sharing</option>
-              <option value="triple">Triple sharing</option><option value="four_plus">4+ sharing</option>
-            </select>
-            <select name="pg_accommodation_type" defaultValue={one(params.pg_accommodation_type)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any accommodation</option><option value="pg_rooms">PG rooms</option>
-              <option value="coliving_apartment">Co-living apartment</option><option value="hostel">Hostel</option>
-              <option value="private_room">Private room</option><option value="studio_apartment">Studio apartment</option>
-            </select>
-            <select name="pg_tier" defaultValue={one(params.pg_tier)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any standard</option><option value="standard">Standard</option><option value="premium_luxury">Premium / luxury co-living</option>
-            </select>
-            <select name="pg_rent_model" defaultValue={one(params.pg_rent_model)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any duration</option><option value="monthly">Monthly</option>
-              <option value="daily_weekly">Daily / weekly</option><option value="long_term_lease">Long-term lease</option>
-            </select>
-            <select name="food_included" defaultValue={foodIncluded} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Food: any</option><option value="true">Food included</option><option value="false">Food not included</option>
-            </select>
-            <fieldset className="col-span-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
-              <legend className="sr-only">PG amenities</legend>
-              {[
-                ['ac', 'AC'], ['attached_washroom', 'Attached washroom'], ['washing_machine', 'Washing machine'],
-                ['wifi', 'Wi-Fi'], ['food', 'Food'], ['housekeeping', 'Housekeeping'], ['gaming_zone', 'Gaming zone'],
-              ].map(([value, label]) => (
-                <label key={value} className="flex items-center gap-1.5">
-                  <input type="checkbox" name="pg_amenities" value={value} defaultChecked={pgAmenities.includes(value)} />
-                  {label}
-                </label>
-              ))}
-            </fieldset>
-            <select name="furnishing_status" defaultValue={one(params.furnishing_status)} className="rounded-md border border-border px-3 py-2 text-sm">
-              <option value="">Any furnishing</option><option value="fully_furnished">Fully furnished</option>
-              <option value="semi_furnished">Semi furnished</option><option value="unfurnished">Unfurnished</option>
-            </select>
-          </>
-        )}
+        {(() => {
+          const category = asSubTypeCategory(filters.property_type ?? '');
+          if (!category) return null;
+
+          return (
+            <>
+              <select name="sub_type" defaultValue={one(params.sub_type)} className="rounded-md border border-border px-3 py-2 text-sm">
+                <option value="">Any {subTypeFieldLabel(category).toLowerCase()}</option>
+                {SUB_TYPE_OPTIONS[category].map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              {category === 'plot' || category === 'land' ? (
+                <select name="facing" defaultValue={one(params.facing)} className="rounded-md border border-border px-3 py-2 text-sm">
+                  <option value="">Any facing</option><option value="east">East</option><option value="west">West</option>
+                  <option value="north">North</option><option value="south">South</option>
+                </select>
+              ) : null}
+              {category === 'pg' ? (
+                <select name="furnishing_status" defaultValue={one(params.furnishing_status)} className="rounded-md border border-border px-3 py-2 text-sm">
+                  <option value="">Any furnishing</option><option value="fully_furnished">Fully furnished</option>
+                  <option value="semi_furnished">Semi furnished</option><option value="unfurnished">Unfurnished</option>
+                </select>
+              ) : null}
+            </>
+          );
+        })()}
         <input
           type="number"
           name="min_price"

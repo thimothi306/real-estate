@@ -117,17 +117,7 @@ export type SearchFilters = {
   area_max?: number;
   bedrooms?: number;
   facing?: string;
-  plot_purpose?: string;
-  plot_approval?: string;
-  plot_transaction?: string;
-  plot_feature?: string;
-  pg_occupancy?: string;
-  pg_tenant_type?: string;
-  pg_accommodation_type?: string;
-  pg_tier?: string;
-  pg_rent_model?: string;
-  food_included?: boolean;
-  pg_amenities?: string[];
+  sub_type?: string;
   sort?: 'newest' | 'price_asc' | 'price_desc';
   page?: number;
   per_page?: number;

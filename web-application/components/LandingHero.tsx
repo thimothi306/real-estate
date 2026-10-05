@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ASSET_BASE_URL } from '@/lib/config';
+import { asSubTypeCategory, SUB_TYPE_OPTIONS, subTypeFieldLabel } from '@/lib/propertyTaxonomy';
 
 /**
  * Each tab pre-seeds the two filter controls below it rather than emitting
@@ -111,7 +112,7 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
   const [propertyType, setPropertyType] = useState<string>(TABS[0].propertyType);
   const [listingType, setListingType] = useState<string>(TABS[0].listingType);
   const [budgetRange, setBudgetRange] = useState('');
-  const [selectedPgAmenities, setSelectedPgAmenities] = useState<string[]>([]);
+  const [subType, setSubType] = useState('');
   const [keyword, setKeyword] = useState('');
 
   // Typing a keyword makes this a keyword-only search — the location
@@ -129,11 +130,12 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
     setPropertyType(next.propertyType);
     setListingType(next.listingType);
     setBudgetRange('');
-    setSelectedPgAmenities([]);
+    setSubType('');
   }
 
+  const subTypeCategory = asSubTypeCategory(propertyType);
   const isPlot = propertyType === 'plot' || propertyType === 'land';
-  const isPg = propertyType === 'pg' || propertyType === 'hostel';
+  const isPg = propertyType === 'pg';
   const budgets = isPlot ? PLOT_BUDGETS : isPg ? PG_BUDGETS : GENERAL_BUDGETS;
   const [budgetMin, budgetMax] = budgetRange.split(':');
 
@@ -253,7 +255,10 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
                 name="property_type"
                 aria-label="Property type"
                 value={propertyType}
-                onChange={(e) => setPropertyType(e.target.value)}
+                onChange={(e) => {
+                  setPropertyType(e.target.value);
+                  setSubType('');
+                }}
                 className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
                 {PROPERTY_TYPES.map((type) => (
@@ -281,109 +286,29 @@ export function LandingHero({ verifiedCount }: { verifiedCount: number }) {
               </button>
             </div>
 
-            {isPlot && (
+            {subTypeCategory && (
               <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <select name="plot_purpose" aria-label="Plot purpose" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any purpose</option>
-                  <option value="residential">Residential</option>
-                  <option value="commercial">Commercial</option>
-                  <option value="industrial">Industrial</option>
-                  <option value="agricultural">Agricultural</option>
-                  <option value="farmhouse">Farmhouse</option>
-                  <option value="venture_layout">Venture / layout</option>
-                </select>
-                <select name="plot_approval" aria-label="Plot approval" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any approval</option>
-                  <option value="hmda">HMDA approved</option>
-                  <option value="dtcp">DTCP approved</option>
-                  <option value="municipal">Municipal approved</option>
-                  <option value="gram_panchayat">Gram Panchayat</option>
-                  <option value="non_approved">Non-approved</option>
-                </select>
-                <select name="plot_transaction" aria-label="Plot transaction" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any transaction</option>
-                  <option value="direct_sale">Direct owner sale</option>
-                  <option value="joint_development">Joint development</option>
-                  <option value="investment_prelaunch">Investment / pre-launch</option>
-                </select>
-                <select name="plot_feature" aria-label="Plot location feature" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any plot location</option>
-                  <option value="gated_community">Gated community</option>
-                  <option value="corner">Corner plot</option>
-                  <option value="highway_facing">Highway facing</option>
-                  <option value="villa_plot">Villa plot</option>
-                  <option value="land_parcel">Land parcel (1+ acre)</option>
-                </select>
-                <select name="facing" aria-label="Plot facing" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any facing</option>
-                  <option value="east">East facing</option>
-                  <option value="west">West facing</option>
-                  <option value="north">North facing</option>
-                  <option value="south">South facing</option>
-                </select>
-              </div>
-            )}
-
-            {isPg && (
-              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <select name="pg_tenant_type" aria-label="Tenant type" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Anyone</option>
-                  <option value="gents">Boys / gents</option>
-                  <option value="ladies">Girls / ladies</option>
-                  <option value="students">Students</option>
-                  <option value="professionals">Working professionals</option>
-                  <option value="unisex">Co-living / unisex</option>
-                  <option value="couples">Couple friendly</option>
-                </select>
-                <select name="pg_occupancy" aria-label="Occupancy" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any occupancy</option>
-                  <option value="single">Single</option>
-                  <option value="double">Double sharing</option>
-                  <option value="triple">Triple sharing</option>
-                  <option value="four_plus">4+ sharing</option>
-                </select>
-                <select name="pg_accommodation_type" aria-label="PG accommodation type" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any accommodation</option>
-                  <option value="pg_rooms">PG rooms</option>
-                  <option value="coliving_apartment">Co-living apartment</option>
-                  <option value="hostel">Hostel</option>
-                  <option value="private_room">Private room</option>
-                  <option value="studio_apartment">Studio apartment</option>
-                </select>
-                <select name="pg_tier" aria-label="PG tier" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any standard</option>
-                  <option value="standard">Standard</option>
-                  <option value="premium_luxury">Premium / luxury co-living</option>
-                </select>
-                <select name="pg_rent_model" aria-label="Rent duration" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Any duration</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="daily_weekly">Daily / weekly</option>
-                  <option value="long_term_lease">Long-term lease (6+ months)</option>
-                </select>
-                <select name="food_included" aria-label="Food included" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
-                  <option value="">Food: any</option>
-                  <option value="true">Food included</option>
-                  <option value="false">Food not included</option>
-                </select>
-                <fieldset className="col-span-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted sm:col-span-4">
-                  <legend className="sr-only">PG amenities</legend>
-                  {[
-                    ['ac', 'AC'], ['attached_washroom', 'Attached washroom'], ['washing_machine', 'Washing machine'],
-                    ['wifi', 'Wi-Fi'], ['food', 'Food'], ['housekeeping', 'Housekeeping'], ['gaming_zone', 'Gaming zone'],
-                  ].map(([value, label]) => (
-                    <label key={value} className="flex items-center gap-1.5">
-                      <input
-                        type="checkbox"
-                        name="pg_amenities"
-                        value={value}
-                        checked={selectedPgAmenities.includes(value)}
-                        onChange={() => setSelectedPgAmenities((current) => current.includes(value) ? current.filter((item) => item !== value) : [...current, value])}
-                      />
-                      {label}
-                    </label>
+                <select
+                  name="sub_type"
+                  aria-label={subTypeFieldLabel(subTypeCategory)}
+                  value={subType}
+                  onChange={(e) => setSubType(e.target.value)}
+                  className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground"
+                >
+                  <option value="">Any {subTypeFieldLabel(subTypeCategory).toLowerCase()}</option>
+                  {SUB_TYPE_OPTIONS[subTypeCategory].map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
-                </fieldset>
+                </select>
+                {isPlot && (
+                  <select name="facing" aria-label="Plot facing" defaultValue="" className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground">
+                    <option value="">Any facing</option>
+                    <option value="east">East facing</option>
+                    <option value="west">West facing</option>
+                    <option value="north">North facing</option>
+                    <option value="south">South facing</option>
+                  </select>
+                )}
               </div>
             )}
 

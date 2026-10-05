@@ -198,14 +198,10 @@ class PropertyTest extends TestCase
     public function test_category_details_can_be_saved_and_used_by_search_filters(): void
     {
         $owner = User::factory()->create(['role' => User::ROLE_OWNER]);
-        $details = [
-            'plot_purpose' => 'residential',
-            'plot_approval' => 'hmda',
-            'plot_features' => ['gated_community', 'corner'],
-        ];
+        $details = ['sub_type' => 'gated_community_plot'];
 
         $created = $this->actingAs($owner, 'sanctum')->postJson('/api/v1/properties', [
-            'title' => 'HMDA Gated Plot',
+            'title' => 'Gated Community Plot',
             'property_type' => 'plot',
             'listing_type' => 'sale',
             'price' => 4500000,
@@ -214,7 +210,7 @@ class PropertyTest extends TestCase
             'category_details' => $details,
         ]);
 
-        $created->assertStatus(201)->assertJsonPath('data.category_details.plot_approval', 'hmda');
+        $created->assertStatus(201)->assertJsonPath('data.category_details.sub_type', 'gated_community_plot');
 
         $matching = Property::factory()->published()->create([
             'property_type' => 'plot',
@@ -222,28 +218,23 @@ class PropertyTest extends TestCase
         ]);
         Property::factory()->published()->create([
             'property_type' => 'plot',
-            'category_details' => ['plot_purpose' => 'agricultural', 'plot_approval' => 'dtcp'],
+            'category_details' => ['sub_type' => 'farmhouse_plot'],
         ]);
 
-        $this->getJson('/api/v1/properties?property_type=plot&plot_approval=hmda&plot_feature=gated_community')
+        $this->getJson('/api/v1/properties?property_type=plot&sub_type=gated_community_plot')
             ->assertOk()
             ->assertJsonFragment(['id' => $matching->id]);
 
-        $pgDetails = [
-            'pg_occupancy' => 'double',
-            'pg_tenant_type' => 'professionals',
-            'pg_amenities' => ['wifi', 'ac'],
-            'food_included' => true,
-        ];
+        $pgDetails = ['sub_type' => 'managed_co_living'];
         $this->actingAs($owner, 'sanctum')->postJson('/api/v1/properties', [
-            'title' => 'Co-living for Professionals',
+            'title' => 'Managed Co-living for Professionals',
             'property_type' => 'pg',
             'listing_type' => 'rent',
             'price' => 10000,
             'city' => 'Hyderabad',
             'state' => 'Telangana',
             'category_details' => $pgDetails,
-        ])->assertStatus(201)->assertJsonPath('data.category_details.food_included', true);
+        ])->assertStatus(201)->assertJsonPath('data.category_details.sub_type', 'managed_co_living');
 
         $matchingPg = Property::factory()->published()->create([
             'property_type' => 'pg',
@@ -252,7 +243,7 @@ class PropertyTest extends TestCase
             'rent_price' => 12000,
             'category_details' => $pgDetails,
         ]);
-        $this->getJson('/api/v1/properties?property_type=pg&listing_type=rent&max_price=15000&pg_occupancy=double&food_included=true&pg_amenities[]=wifi&pg_amenities[]=ac')
+        $this->getJson('/api/v1/properties?property_type=pg&listing_type=rent&max_price=15000&sub_type=managed_co_living')
             ->assertOk()
             ->assertJsonFragment(['id' => $matchingPg->id]);
     }
