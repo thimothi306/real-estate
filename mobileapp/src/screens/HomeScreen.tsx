@@ -9,12 +9,14 @@ import { PropertyCard } from '../components/PropertyCard';
 import { Banner, IconChip, Loading, SectionHeader } from '../components/ui';
 import { accents, colors, radius, shadow, spacing, type } from '../theme';
 
-/** Primary categories — the five most-used, with More opening full search. */
+/** Primary categories, with More opening full search. Matches the web hero's tabs. */
 const CATEGORIES: { label: string; icon: string; type?: PropertyType; listing?: 'sale' | 'rent' }[] = [
   { label: 'Buy', icon: '🏠', listing: 'sale' },
   { label: 'Rent', icon: '🏢', listing: 'rent' },
   { label: 'Plots', icon: '🏗', type: 'plot' },
+  { label: 'Lands', icon: '🌾', type: 'land' },
   { label: 'Commercial', icon: '🏬', type: 'commercial' },
+  { label: 'PG / Co-living', icon: '🛏', type: 'pg' },
 ];
 
 /** Lifestyle-first discovery — the differentiator over budget-only search. */
@@ -98,7 +100,11 @@ export function HomeScreen({ navigation }: any) {
 
       {!!error && <Banner tone="error" message={error} />}
 
-      <View style={styles.categoryRow}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.categoryRow}
+      >
         {CATEGORIES.map((category, index) => {
           const accent = accents[index % accents.length];
           return (
@@ -125,7 +131,7 @@ export function HomeScreen({ navigation }: any) {
           <IconChip glyph="•••" bg={colors.surfaceAlt} size={46} />
           <Text style={styles.categoryLabel}>More</Text>
         </Pressable>
-      </View>
+      </ScrollView>
 
       <SectionHeader
         title="Lifestyle Search"
@@ -224,8 +230,8 @@ const styles = StyleSheet.create({
   },
   searchBarIcon: { fontSize: 14 },
   searchBarText: { color: colors.muted, fontSize: 13.5 },
-  categoryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.xl },
-  categoryTile: { alignItems: 'center', gap: 7, width: '19%' },
+  categoryRow: { flexDirection: 'row', gap: spacing.lg, marginBottom: spacing.xl, paddingRight: spacing.lg },
+  categoryTile: { alignItems: 'center', gap: 7, width: 68 },
   categoryLabel: { fontSize: 11, color: colors.text, fontWeight: '700', textAlign: 'center' },
   lifestyleRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.xl },
   lifestyleTile: {

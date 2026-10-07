@@ -1,57 +1,61 @@
 import { Platform } from 'react-native';
 
 /**
- * Kavuri Estates brand palette.
+ * Kavuri Estates brand palette — deep emerald + wine burgundy.
  *
- * Deep navy carries the brand (headers, primary actions, dark surfaces);
- * gold is reserved for the highest-intent CTA on a screen so it never
- * competes with itself. Everything else is a neutral or a semantic state.
+ * Mirrors web-application/app/globals.css: blue-navy read as generic
+ * finance/corporate, so emerald carries the brand now (it has real meaning
+ * for real estate — land, growth, an appreciating asset) and burgundy is
+ * the single highest-intent accent. Token *names* (navy/gold/primary) are
+ * kept as-is to match the web app's own choice, and because renaming them
+ * would mean touching every screen for no visible benefit — only the
+ * values changed.
  */
 export const colors = {
-  // Surfaces
-  bg: '#f4f6fa',
+  // Surfaces — warm ivory, no blue cast
+  bg: '#faf8f2',
   surface: '#ffffff',
-  surfaceAlt: '#eef1f7',
-  border: '#e3e7ef',
-  borderStrong: '#d1d8e5',
+  surfaceAlt: '#f1ece0',
+  border: '#e6e0cf',
+  borderStrong: '#d4cbb0',
 
-  // Navy scale
-  navy: '#0d1b33',
-  navyDeep: '#081224',
-  navySoft: '#16305b',
-  navyTint: '#e8edf7',
+  // Navy scale (now emerald)
+  navy: '#0d3b2e',
+  navyDeep: '#082720',
+  navySoft: '#175a46',
+  navyTint: '#e8f6f0',
 
   // Text
-  text: '#101828',
-  muted: '#667085',
-  faint: '#98a2b3',
+  text: '#16241d',
+  muted: '#6b6f63',
+  faint: '#9a9d8e',
   onDark: '#ffffff',
   onDarkMuted: 'rgba(255,255,255,0.66)',
 
   // Brand actions
-  primary: '#16305b',
-  primaryDark: '#0d1b33',
-  primarySoft: '#e8edf7',
-  gold: '#c9a961',
-  goldDark: '#b0904a',
-  goldSoft: '#faf4e6',
+  primary: '#1f8f6c',
+  primaryDark: '#146b52',
+  primarySoft: '#e8f6f0',
+  gold: '#7c2436',
+  goldDark: '#591a27',
+  goldSoft: '#f8e9eb',
 
   // Semantic
-  success: '#17803d',
-  successBg: '#e8f5ec',
+  success: '#3d7a4a',
+  successBg: '#eaf3ec',
   danger: '#b42318',
   dangerBg: '#fdeceb',
   warning: '#a15c07',
   warningBg: '#fdf3e3',
-  info: '#175cd3',
-  infoBg: '#eaf1fe',
+  info: '#0e7490',
+  infoBg: '#e6f4f7',
 };
 
-/** Dark navy surfaces used by the splash, chat header, and insight panels. */
+/** Dark emerald surfaces used by the splash, chat header, and insight panels. */
 export const darkColors = {
-  bg: '#0a1628',
-  surface: '#0f2140',
-  surfaceAlt: '#16305b',
+  bg: '#051813',
+  surface: '#082821',
+  surfaceAlt: '#1c4a3a',
   border: 'rgba(255,255,255,0.10)',
   text: '#ffffff',
   muted: 'rgba(255,255,255,0.66)',
@@ -59,12 +63,12 @@ export const darkColors = {
 
 /** Rotating tints for category/service icon chips. */
 export const accents = [
-  { bg: '#e8edf7', fg: '#16305b' },
-  { bg: '#faf4e6', fg: '#b0904a' },
-  { bg: '#e8f5ec', fg: '#17803d' },
+  { bg: '#e8f6f0', fg: '#0d3b2e' },
+  { bg: '#f8e9eb', fg: '#591a27' },
+  { bg: '#eaf3ec', fg: '#3d7a4a' },
   { bg: '#fdeceb', fg: '#b42318' },
   { bg: '#f1ecfd', fg: '#6d3fc0' },
-  { bg: '#e6f6f8', fg: '#0e7a90' },
+  { bg: '#e6f4f7', fg: '#0e7490' },
 ];
 
 export const spacing = {

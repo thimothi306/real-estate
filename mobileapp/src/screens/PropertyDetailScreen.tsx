@@ -29,6 +29,7 @@ import { BookingModal } from '../components/BookingModal';
 import { PropertyCard } from '../components/PropertyCard';
 import { Badge, Banner, Button, Card, Loading } from '../components/ui';
 import { VisitScheduleModal } from '../components/VisitScheduleModal';
+import { asSubTypeCategory, SUB_TYPE_OPTIONS, subTypeFieldLabel } from '../propertyTaxonomy';
 import { colors, formatPrice, radius, spacing, titleCase } from '../theme';
 
 function formatHistoryEvent(event: PropertyHistoryEvent): string {
@@ -212,8 +213,15 @@ export function PropertyDetailScreen({ navigation, route }: any) {
   const images = (property.media ?? []).filter((item) => item.type === 'image');
   const isBookable = BOOKABLE_PROPERTY_TYPES.includes(property.property_type);
 
+  const subTypeCategory = asSubTypeCategory(property.property_type);
+  const subTypeValue = typeof property.category_details?.sub_type === 'string' ? property.category_details.sub_type : null;
+  const subTypeLabel = subTypeCategory && subTypeValue
+    ? SUB_TYPE_OPTIONS[subTypeCategory].find((option) => option.value === subTypeValue)?.label ?? null
+    : null;
+
   const facts: [string, string][] = [
     ['Type', titleCase(property.property_type)],
+    ...(subTypeCategory ? [[subTypeFieldLabel(subTypeCategory), subTypeLabel ?? '—'] as [string, string]] : []),
     ['Listing', property.listing_type === 'rent' ? 'For rent' : 'For sale'],
     ['Bedrooms', property.bedrooms ? String(property.bedrooms) : '—'],
     ['Bathrooms', property.bathrooms ? String(property.bathrooms) : '—'],
@@ -429,8 +437,8 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   content: { paddingBottom: spacing.xxl },
   errorWrap: { flex: 1, backgroundColor: colors.bg, padding: spacing.xl, justifyContent: 'center' },
-  gallery: { height: 240, backgroundColor: '#e9edf2' },
-  galleryFallback: { height: 240, backgroundColor: '#e9edf2', alignItems: 'center', justifyContent: 'center' },
+  gallery: { height: 240, backgroundColor: colors.surfaceAlt },
+  galleryFallback: { height: 240, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
   galleryFallbackText: { color: colors.muted, fontSize: 14 },
   body: { padding: spacing.lg, gap: spacing.md },
   priceRow: { flexDirection: 'row', alignItems: 'flex-start' },

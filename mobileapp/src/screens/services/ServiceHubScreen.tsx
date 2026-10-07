@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   tileLabel: { fontSize: 13.5, fontWeight: '600', color: colors.text },
   tileDescription: { fontSize: 11, color: colors.muted, lineHeight: 15 },
   partnerBanner: {
-    backgroundColor: '#eaf1fd',
+    backgroundColor: colors.primarySoft,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
     padding: spacing.md,

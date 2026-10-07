@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: spacing.md,
   },
-  rowUnread: { backgroundColor: '#eaf1fd', borderColor: '#c9dcf7' },
+  rowUnread: { backgroundColor: colors.primarySoft, borderColor: 'rgba(31,143,108,0.25)' },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary, marginTop: 5 },
   rowBody: { flex: 1, gap: 2 },
   message: { fontSize: 14, color: colors.text },

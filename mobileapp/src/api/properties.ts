@@ -172,6 +172,8 @@ export type CreatePropertyPayload = {
   locality?: string;
   amenity_ids?: number[];
   lifestyle_tag_ids?: number[];
+  /** One sub-type per category (Plots/Lands/Commercial/PG) — see propertyTaxonomy.ts. */
+  category_details?: { sub_type?: string };
 };
 
 export async function createProperty(payload: CreatePropertyPayload) {

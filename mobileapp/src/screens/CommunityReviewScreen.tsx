@@ -9,11 +9,11 @@ import { colors, radius, shadow, spacing } from '../theme';
 const CATEGORY_META: Record<ReviewCategory, { label: string; icon: string; color: string }> = {
   water_supply: { label: 'Water Supply', icon: '💧', color: '#1a86c9' },
   internet: { label: 'Internet Quality', icon: '📶', color: '#6d3fc0' },
-  traffic: { label: 'Traffic', icon: '🚦', color: '#a15c07' },
-  safety: { label: 'Safety', icon: '🛡', color: '#17803d' },
-  schools: { label: 'Schools', icon: '🎓', color: '#0e7a90' },
-  hospitals: { label: 'Hospitals', icon: '🏥', color: '#b42318' },
-  maintenance: { label: 'Maintenance', icon: '🧰', color: '#667085' },
+  traffic: { label: 'Traffic', icon: '🚦', color: colors.warning },
+  safety: { label: 'Safety', icon: '🛡', color: colors.success },
+  schools: { label: 'Schools', icon: '🎓', color: colors.info },
+  hospitals: { label: 'Hospitals', icon: '🏥', color: colors.danger },
+  maintenance: { label: 'Maintenance', icon: '🧰', color: colors.muted },
 };
 
 /** Display order matches the mockup rather than whatever order SQL returns. */

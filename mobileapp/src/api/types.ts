@@ -99,6 +99,7 @@ export type PropertyDetail = PropertySummary & {
   total_floors: number | null;
   facing: string | null;
   furnishing_status: string | null;
+  category_details: Record<string, unknown> | null;
   has_balcony: boolean;
   has_swimming_pool: boolean;
   has_garden: boolean;
@@ -172,12 +173,19 @@ export type Booking = AvailabilityBlock & {
 export type SearchFilters = {
   q?: string;
   city?: string;
+  state?: string;
+  country?: string;
   property_type?: PropertyType;
   listing_type?: ListingType;
   min_price?: number;
   max_price?: number;
+  area_min?: number;
+  area_max?: number;
   bedrooms?: number;
+  facing?: string;
   furnishing_status?: string;
+  /** One sub-type per category (Plots/Lands/Commercial/PG) — see propertyTaxonomy.ts. */
+  sub_type?: string;
   rera_only?: boolean;
   lifestyle_tag?: string;
   sort?: 'newest' | 'price_asc' | 'price_desc';

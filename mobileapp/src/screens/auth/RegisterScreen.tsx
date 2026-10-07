@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     minWidth: '47%',
   },
-  roleChipSelected: { borderColor: colors.primary, backgroundColor: '#eaf1fd' },
+  roleChipSelected: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
   roleLabel: { fontSize: 14, fontWeight: '600', color: colors.text },
   roleLabelSelected: { color: colors.primary },
   roleHint: { fontSize: 11.5, color: colors.muted, marginTop: 2 },

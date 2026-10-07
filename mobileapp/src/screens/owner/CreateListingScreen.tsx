@@ -13,24 +13,8 @@ import {
 } from '../../api/properties';
 import type { LifestyleTag, ListingType, PropertyDetail, PropertyType } from '../../api/types';
 import { Banner, Button, Field } from '../../components/ui';
-import { colors, radius, spacing, titleCase } from '../../theme';
-
-const PROPERTY_TYPES: PropertyType[] = [
-  'apartment',
-  'villa',
-  'plot',
-  'land',
-  'farmhouse',
-  'resort',
-  'wedding_venue',
-  'hostel',
-  'pg',
-  'commercial',
-  'co_working_space',
-  'office_space',
-  'shop',
-  'warehouse',
-];
+import { asSubTypeCategory, PROPERTY_TYPES, SUB_TYPE_OPTIONS, subTypeFieldLabel } from '../../propertyTaxonomy';
+import { colors, radius, spacing } from '../../theme';
 
 type PickedPhoto = { uri: string; name: string; type: string };
 
@@ -41,6 +25,9 @@ export function CreateListingScreen({ navigation, route }: any) {
   const [title, setTitle] = useState(editing?.title ?? '');
   const [description, setDescription] = useState(editing?.description ?? '');
   const [propertyType, setPropertyType] = useState<PropertyType>(editing?.property_type ?? 'apartment');
+  const [subType, setSubType] = useState<string>(
+    typeof editing?.category_details?.sub_type === 'string' ? editing.category_details.sub_type : ''
+  );
   const [listingType, setListingType] = useState<ListingType>(editing?.listing_type ?? 'sale');
   const [price, setPrice] = useState(editing ? String(editing.price ?? '') : '');
   const [bedrooms, setBedrooms] = useState(editing?.bedrooms ? String(editing.bedrooms) : '');
@@ -58,6 +45,7 @@ export function CreateListingScreen({ navigation, route }: any) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [uploadNotice, setUploadNotice] = useState<string | null>(null);
+  const subTypeCategory = asSubTypeCategory(propertyType);
 
   useEffect(() => {
     navigation.setOptions({ title: isEditMode ? 'Edit property' : 'Post a property' });
@@ -134,6 +122,7 @@ export function CreateListingScreen({ navigation, route }: any) {
       state: state.trim(),
       locality: locality.trim() || undefined,
       lifestyle_tag_ids: selectedTagIds.length ? selectedTagIds : undefined,
+      category_details: subTypeCategory && subType ? { sub_type: subType } : undefined,
     };
 
     try {
@@ -229,16 +218,38 @@ export function CreateListingScreen({ navigation, route }: any) {
         <View style={styles.chipRow}>
           {PROPERTY_TYPES.map((option) => (
             <Pressable
-              key={option}
-              onPress={() => setPropertyType(option)}
-              style={[styles.chip, propertyType === option && styles.chipActive]}
+              key={option.value}
+              onPress={() => {
+                setPropertyType(option.value as PropertyType);
+                setSubType('');
+              }}
+              style={[styles.chip, propertyType === option.value && styles.chipActive]}
             >
-              <Text style={[styles.chipText, propertyType === option && styles.chipTextActive]}>
-                {titleCase(option)}
+              <Text style={[styles.chipText, propertyType === option.value && styles.chipTextActive]}>
+                {option.label}
               </Text>
             </Pressable>
           ))}
         </View>
+
+        {subTypeCategory && (
+          <>
+            <Text style={styles.groupLabel}>{subTypeFieldLabel(subTypeCategory)}</Text>
+            <View style={styles.chipRow}>
+              {SUB_TYPE_OPTIONS[subTypeCategory].map((option) => (
+                <Pressable
+                  key={option.value}
+                  onPress={() => setSubType((current) => (current === option.value ? '' : option.value))}
+                  style={[styles.chip, subType === option.value && styles.chipActive]}
+                >
+                  <Text style={[styles.chipText, subType === option.value && styles.chipTextActive]}>
+                    {option.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </>
+        )}
 
         {lifestyleTags.length > 0 && (
           <>

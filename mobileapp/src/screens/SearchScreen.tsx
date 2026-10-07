@@ -6,7 +6,8 @@ import { getLifestyleTags, saveSearch, searchProperties } from '../api/propertie
 import type { LifestyleTag, PropertySummary, SearchFilters } from '../api/types';
 import { PropertyCard } from '../components/PropertyCard';
 import { Banner, Button, EmptyState, Field, Loading } from '../components/ui';
-import { colors, radius, spacing, titleCase } from '../theme';
+import { asSubTypeCategory, PROPERTY_TYPES, SUB_TYPE_OPTIONS, subTypeFieldLabel } from '../propertyTaxonomy';
+import { colors, radius, spacing } from '../theme';
 
 const SORTS: { value: NonNullable<SearchFilters['sort']>; label: string }[] = [
   { value: 'newest', label: 'Newest' },
@@ -36,6 +37,7 @@ export function SearchScreen({ navigation, route }: any) {
 
   // Draft filter values, only applied when the sheet's Apply button is pressed.
   const [draft, setDraft] = useState<SearchFilters>(filters);
+  const draftSubTypeCategory = asSubTypeCategory(draft.property_type);
 
   useEffect(() => {
     getLifestyleTags()
@@ -95,6 +97,7 @@ export function SearchScreen({ navigation, route }: any) {
   const activeFilterCount = [
     filters.city,
     filters.property_type,
+    filters.sub_type,
     filters.listing_type,
     filters.min_price,
     filters.max_price,
@@ -233,23 +236,48 @@ export function SearchScreen({ navigation, route }: any) {
 
             <Text style={styles.groupLabel}>Property type</Text>
             <View style={styles.chipRow}>
-              {(['apartment', 'villa', 'plot', 'land', 'farmhouse', 'resort', 'wedding_venue', 'hostel', 'pg', 'commercial', 'co_working_space', 'office_space', 'shop', 'warehouse'] as const).map((option) => (
+              {PROPERTY_TYPES.map((option) => (
                 <Pressable
-                  key={option}
+                  key={option.value}
                   onPress={() =>
                     setDraft((current) => ({
                       ...current,
-                      property_type: current.property_type === option ? undefined : option,
+                      property_type: current.property_type === option.value ? undefined : (option.value as SearchFilters['property_type']),
+                      sub_type: undefined,
                     }))
                   }
-                  style={[styles.chip, draft.property_type === option && styles.chipActive]}
+                  style={[styles.chip, draft.property_type === option.value && styles.chipActive]}
                 >
-                  <Text style={[styles.chipText, draft.property_type === option && styles.chipTextActive]}>
-                    {titleCase(option)}
+                  <Text style={[styles.chipText, draft.property_type === option.value && styles.chipTextActive]}>
+                    {option.label}
                   </Text>
                 </Pressable>
               ))}
             </View>
+
+            {draftSubTypeCategory && (
+              <>
+                <Text style={styles.groupLabel}>{subTypeFieldLabel(draftSubTypeCategory)}</Text>
+                <View style={styles.chipRow}>
+                  {SUB_TYPE_OPTIONS[draftSubTypeCategory].map((option) => (
+                    <Pressable
+                      key={option.value}
+                      onPress={() =>
+                        setDraft((current) => ({
+                          ...current,
+                          sub_type: current.sub_type === option.value ? undefined : option.value,
+                        }))
+                      }
+                      style={[styles.chip, draft.sub_type === option.value && styles.chipActive]}
+                    >
+                      <Text style={[styles.chipText, draft.sub_type === option.value && styles.chipTextActive]}>
+                        {option.label}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </>
+            )}
 
             {lifestyleTags.length > 0 && (
               <>
@@ -354,7 +382,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: 6,
     borderRadius: radius.pill,
-    backgroundColor: '#eef0f3',
+    backgroundColor: colors.surfaceAlt,
   },
   sortChipActive: { backgroundColor: colors.primary },
   sortChipText: { fontSize: 12.5, color: colors.muted, fontWeight: '600' },
