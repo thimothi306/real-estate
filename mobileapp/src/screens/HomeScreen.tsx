@@ -7,7 +7,7 @@ import type { PropertySummary, PropertyType } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import { PropertyCard } from '../components/PropertyCard';
 import { Banner, IconChip, Loading, SectionHeader } from '../components/ui';
-import { accents, colors, radius, shadow, spacing, type } from '../theme';
+import { accents, colors, darkColors, radius, shadow, spacing, type } from '../theme';
 
 /** Primary categories, with More opening full search. Matches the web hero's tabs. */
 const CATEGORIES: { label: string; icon: string; type?: PropertyType; listing?: 'sale' | 'rent' }[] = [
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   trustTitle: { color: '#fff', fontSize: 16.5, fontWeight: '800', lineHeight: 22 },
-  trustSub: { color: colors.gold, fontSize: 12.5, fontWeight: '700', marginTop: 8 },
+  trustSub: { color: darkColors.accent, fontSize: 12.5, fontWeight: '700', marginTop: 8 },
   trustShield: { fontSize: 40 },
   empty: { color: colors.muted, fontSize: 13.5, paddingVertical: spacing.lg, textAlign: 'center' },
   recentRow: { marginBottom: spacing.xl },

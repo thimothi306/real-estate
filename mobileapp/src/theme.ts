@@ -59,6 +59,9 @@ export const darkColors = {
   border: 'rgba(255,255,255,0.10)',
   text: '#ffffff',
   muted: 'rgba(255,255,255,0.66)',
+  /** Burgundy accent text readable on these dark surfaces — colors.gold is
+   * too dark for that now that gold means burgundy, not light tan. */
+  accent: '#d97e91',
 };
 
 /** Rotating tints for category/service icon chips. */

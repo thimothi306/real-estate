@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
   },
-  primaryText: { color: colors.navy, fontSize: 15.5, fontWeight: '800' },
+  primaryText: { color: colors.onDark, fontSize: 15.5, fontWeight: '800' },
   secondaryButton: {
     borderWidth: 1.5,
     borderColor: 'rgba(255,255,255,0.35)',
